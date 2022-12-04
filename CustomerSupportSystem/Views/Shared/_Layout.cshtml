@@ -37,8 +37,11 @@
         </nav>
     </header>
     <div class="container-fluid">
-        <partial name="_SideBarPartial" />
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <partial name="_SideBarPartial" />
+        }
+        <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
