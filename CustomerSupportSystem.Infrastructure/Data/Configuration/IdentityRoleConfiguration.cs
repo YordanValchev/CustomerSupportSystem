@@ -14,8 +14,8 @@
                 new IdentityRole()
                 {
                     Id = "c838fb22-a99a-42d7-9c00-9bae1b092cfd",
-                    Name = "Admin",
-                    NormalizedName = "ADMIN"
+                    Name = "Administrator",
+                    NormalizedName = "ADMINISTRATOR"
                 },
                 new IdentityRole()
                 {
