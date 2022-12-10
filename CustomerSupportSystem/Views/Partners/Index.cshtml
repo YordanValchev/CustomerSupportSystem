@@ -1,8 +1,13 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
-    ViewData["ActivePage"] = NavPagesService.Index;
+    ViewData["Title"] = "Partners";
+    ViewData["ActivePage"] = NavPagesService.AllPartners;
 }
 
+<div class="row">
+    <ul class="nav nav-pills mb-auto justify-content-end">
+        <li class="nav-item"><a class="nav-link active" id="AddPartner" asp-area="" asp-controller="Partners" asp-action="Add">Add partner</a></li>
+    </ul>
+</div>
 <div class="text-center">
     <table class="table table-hover">
         <thead>
