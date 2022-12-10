@@ -10,8 +10,4 @@
     <ProjectReference Include="..\CustomerSupportSystem.Infrastructure\CustomerSupportSystem.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Contracts\" />
-  </ItemGroup>
-
 </Project>
