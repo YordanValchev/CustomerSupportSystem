@@ -1,9 +1,4 @@
-using CustomerSupportSystem.Infrastructure.Data;
-using CustomerSupportSystem.Infrastructure.Data.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using CustomerSupportSystem.Infrastructure.Data.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +22,10 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IRepository, Repository>();
+builder.Services.AddScoped<IPartnerService, PartnerService>();
+
 
 var app = builder.Build();
 

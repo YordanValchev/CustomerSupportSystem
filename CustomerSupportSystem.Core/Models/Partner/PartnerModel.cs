@@ -1,15 +1,16 @@
-﻿using CustomerSupportSystem.Infrastructure.Data.Models;
-
-namespace CustomerSupportSystem.Core.Models.Partner
+﻿namespace CustomerSupportSystem.Core.Models.Partner
 {
     public class PartnerModel
     {
+        public int Id { get; set; }
+
         [Required]
-        [StringLength(DataTypesConstants.PartnerNameMaxLenght)]
+        [Display(Name = "Partner name")]
+        [StringLength(DataTypesConstants.PartnerNameMaxLenght,MinimumLength = DataTypesConstants.PartnerNameMinLenght)]
         public string Name { get; set; } = null!;
 
         [Required]
-        [StringLength(DataTypesConstants.AddressMaxLenght)]
+        [StringLength(DataTypesConstants.AddressMaxLenght, MinimumLength = DataTypesConstants.AddressMinLenght)]
         public string Address { get; set; } = null!;
 
         [Required]
@@ -24,22 +25,27 @@ namespace CustomerSupportSystem.Core.Models.Partner
         [StringLength(DataTypesConstants.PostcodeMaxLenght)]
         public string Postcode { get; set; } = null!;
 
-        [StringLength(DataTypesConstants.PartnerRegistrationNumberMaxLenght)]
+        [Display(Name = "Registration number")]
+        [StringLength(DataTypesConstants.PartnerRegistrationNumberMaxLenght, MinimumLength = DataTypesConstants.PartnerRegistrationNumberMinLenght)]
         public string? RegistrationNumber { get; set; }
 
-        [StringLength(DataTypesConstants.PartnerTaxNumberMaxLenght)]
+        [Display(Name = "Tax number")]
+        [StringLength(DataTypesConstants.PartnerTaxNumberMaxLenght, MinimumLength = DataTypesConstants.PartnerTaxNumberMinLenght)]
         public string? TaxNumber { get; set; }
 
         [StringLength(DataTypesConstants.WebsiteMaxLenght)]
         public string? Website { get; set; }
 
+        [Required]
         [Display(Name = "Consultant")]
-        public int? ConsultantId { get; set; }
+        public int ConsultantId { get; set; }
 
+        [Display(Name = "Subscription contract number")]
         [StringLength(DataTypesConstants.SubscriptionContractNumberMaxLenght)]
         public string? SubscriptionContractNumber { get; set; }
 
-        public bool? IsSubscriptionActive { get; set; }
+        [Display(Name = "Is client's sunscription active?")]
+        public bool IsSubscriptionActive { get; set; } = false;
 
         public IEnumerable<PartnerCountriesModel> Countries { get; set; } = new List<PartnerCountriesModel>();
 

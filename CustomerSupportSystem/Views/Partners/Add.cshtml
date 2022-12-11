@@ -1,0 +1,12 @@
+﻿@{
+    ViewBag.Title = "Add Partner";
+    ViewData["ActivePage"] = NavPagesService.AllPartners;
+}
+
+<h2 class="text-center mb-3">@ViewBag.Title</h2>
+
+<partial name="_PartnerFormPartial" model="@Model" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

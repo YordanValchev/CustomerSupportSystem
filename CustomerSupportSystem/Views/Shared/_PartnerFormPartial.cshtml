@@ -1,0 +1,83 @@
+﻿@model PartnerModel
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form method="post">
+            <div class="row g-3">
+                <input type="hidden" asp-for="@Model.Id" />
+                <div class="col-12">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control">
+                    <span asp-validation-for="Name" class="small text-danger"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="Address" class="form-label"></label>
+                    <input asp-for="Address" class="form-control">
+                    <span asp-validation-for="Address" class="small text-danger"></span>
+                </div>
+                <div class="col-md-5">
+                    <label asp-for="CountryId" class="form-label"></label>
+                    <select asp-for="CountryId" class="form-control">
+                        @foreach (var country in Model.Countries)
+                        {
+                            <option value="@country.Id">@country.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CountryId" class="small text-danger"></span>
+                </div>
+                <div class="col-md-5">
+                    <label asp-for="City" class="form-label"></label>
+                    <input asp-for="City" class="form-control">
+                    <span asp-validation-for="City" class="small text-danger"></span>
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="Postcode" class="form-label"></label>
+                    <input asp-for="Postcode" class="form-control">
+                    <span asp-validation-for="Postcode" class="small text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="RegistrationNumber" class="form-label"></label>
+                    <input asp-for="RegistrationNumber" class="form-control">
+                    <span asp-validation-for="RegistrationNumber" class="small text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="TaxNumber" class="form-label"></label>
+                    <input asp-for="TaxNumber" class="form-control">
+                    <span asp-validation-for="TaxNumber" class="small text-danger"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="Website" class="form-label"></label>
+                    <input asp-for="Website" class="form-control">
+                    <span asp-validation-for="Website" class="small text-danger"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="ConsultantId" class="form-label"></label>
+                    <select asp-for="ConsultantId" class="form-control">
+                        @foreach (var consultant in Model.Consultants)
+                        {
+                            <option value="@consultant.Id">@consultant.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="ConsultantId" class="small text-danger"></span>
+                </div>
+            </div>
+            <hr class="my-4"/>
+            <div class="row row-cols-1">
+                <div class="col">
+                    <label asp-for="SubscriptionContractNumber" class="form-label"></label>
+                    <input asp-for="SubscriptionContractNumber" class="form-control">
+                    <span asp-validation-for="SubscriptionContractNumber" class="small text-danger"></span>
+                </div>
+                <div class="col">
+                    <input asp-for="IsSubscriptionActive" class="form-check-input" type="checkbox" value="false">
+                    <label asp-for="IsSubscriptionActive" class="form-check-label"></label>
+                    <span asp-validation-for="IsSubscriptionActive" class="small text-danger"></span>
+                </div>
+            </div>
+            <hr class="my-4" />
+            <div class="text-center">
+                <input class="w-100 btn btn-primary btn-lg" type="submit" value="Save" />
+            </div>
+        </form>
+    </div>
+</div>
