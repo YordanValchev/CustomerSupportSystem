@@ -1,0 +1,81 @@
+﻿@model PartnerDetailsModel
+
+@{
+    ViewBag.Title = "Partner details";
+    ViewData["ActivePage"] = NavPagesService.AllPartners;
+}
+
+<h2 class="text-center mb-3">@ViewBag.Title</h2>
+<div class="row">
+    <div class="col-md-7">
+        <form>
+            <div class="row g-3">
+                <input type="hidden" asp-for="@Model.Id" />
+                <div class="col-12">
+                    <label asp-for="@Model.Name" class="form-label"></label>
+                    <input asp-for="@Model.Name" class="form-control" readonly>
+                </div>
+                <div class="col-12">
+                    <label asp-for="@Model.Address" class="form-label"></label>
+                    <input asp-for="@Model.Address" class="form-control" readonly>
+                </div>
+                <div class="col-md-5">
+                    <label asp-for="@Model.Country" class="form-label"></label>
+                    <input asp-for="@Model.Country" class="form-control" readonly>
+                </div>
+                <div class="col-md-5">
+                    <label asp-for="@Model.City" class="form-label"></label>
+                    <input asp-for="@Model.City" class="form-control" readonly>
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="@Model.Postcode" class="form-label"></label>
+                    <input asp-for="@Model.Postcode" class="form-control" readonly>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="@Model.RegistrationNumber" class="form-label"></label>
+                    <input asp-for="@Model.RegistrationNumber" class="form-control" readonly>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="@Model.TaxNumber" class="form-label"></label>
+                    <input asp-for="@Model.TaxNumber" class="form-control" readonly>
+                </div>
+                <div class="col-12">
+                    <label asp-for="@Model.Website" class="form-label"></label>
+                    <input asp-for="@Model.Website" class="form-control" readonly>
+                </div>
+                <div class="col-12">
+                    <label asp-for="@Model.Consultant" class="form-label"></label>
+                    <input asp-for="@Model.Consultant" class="form-control" readonly>
+                </div>
+            </div>
+            <hr class="my-4" />
+            <div class="row row-cols-1">
+                <div class="col">
+                    <label asp-for="@Model.SubscriptionContractNumber" class="form-label"></label>
+                    <input asp-for="@Model.SubscriptionContractNumber" class="form-control" readonly>
+                    <span asp-validation-for="SubscriptionContractNumber" class="small text-danger"></span>
+                </div>
+                <div class="col">
+                    <input asp-for="@Model.IsSubscriptionActive" class="form-check-input" type="checkbox" readonly>
+                    <label asp-for="@Model.IsSubscriptionActive" class="form-check-label"></label>
+                </div>
+            </div>
+            <hr class="my-4" />
+        </form>
+    </div>
+    <div class="col-md-5">
+        <h4 class="text-center mb-3">Contacts</h4>
+        <ul class="list-group mb-3">
+            @foreach(var contact in Model.Contacts)
+            {
+                <li class="list-group-item d-flex">
+                    <div>
+                        <h6 class="my-0">@contact.Name</h6>
+                        <small class="text-muted">@contact.JobTitle</small>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+

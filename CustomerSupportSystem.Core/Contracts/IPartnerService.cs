@@ -13,5 +13,7 @@ namespace CustomerSupportSystem.Core.Contracts
         Task<bool> ConsultantExists(int consultantId);
 
         Task<int> Create(PartnerModel model);
+
+        Task<PartnerDetailsModel> PartnerDetails(int id);
     }
 }

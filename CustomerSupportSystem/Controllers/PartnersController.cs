@@ -22,9 +22,12 @@ namespace CustomerSupportSystem.Controllers
             return View();
         }
 
-        public IActionResult Details()
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
         {
-            return View();
+            var model = await partnerService.PartnerDetails(id);
+
+            return View(model);
         }
 
         [HttpGet]
