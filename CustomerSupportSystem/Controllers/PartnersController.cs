@@ -17,9 +17,12 @@ namespace CustomerSupportSystem.Controllers
             logger = _logger;
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var model = await partnerService.QueryPartners();
+            
+            return View(model);
         }
 
         [HttpGet]

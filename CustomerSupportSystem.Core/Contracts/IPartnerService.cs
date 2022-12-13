@@ -15,5 +15,7 @@ namespace CustomerSupportSystem.Core.Contracts
         Task<int> Create(PartnerModel model);
 
         Task<PartnerDetailsModel> PartnerDetails(int id);
+
+        Task<PartnersQueryModel> QueryPartners();
     }
 }

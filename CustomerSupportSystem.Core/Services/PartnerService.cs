@@ -124,5 +124,31 @@ namespace CustomerSupportSystem.Core.Services
                 })
                 .FirstAsync();
         }
+
+        public async Task<PartnersQueryModel> QueryPartners()
+        {
+            var partners = await repo.AllReadonly<Partner>()
+                .Include(partner => partner.Country)
+                .Include(partner => partner.Consultant)
+                .Select(partner => new PartnersQueryDetailModel()
+                {
+                    Id = partner.Id,
+                    Name = partner.Name,
+                    Address = partner.Address,
+                    City = partner.City,
+                    Postcode = partner.Postcode,
+                    Country = partner.Country == null ? string.Empty : partner.Country.Name,
+                    RegistrationNumber = partner.RegistrationNumber,
+                    TaxNumber = partner.TaxNumber,
+                    Website = partner.Website,
+                    Consultant = partner.Consultant == null ? string.Empty : $"{partner.Consultant.FirstName} {partner.Consultant.LastName}"
+                })
+                .ToListAsync();
+
+            return new PartnersQueryModel()
+            {
+                Partners = partners
+            };
+        }
     }
 }
