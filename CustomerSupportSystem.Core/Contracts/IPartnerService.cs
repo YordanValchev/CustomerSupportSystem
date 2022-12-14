@@ -16,6 +16,6 @@ namespace CustomerSupportSystem.Core.Contracts
 
         Task<PartnerDetailsModel> PartnerDetails(int id);
 
-        Task<PartnersQueryModel> QueryPartners();
+        Task<PartnersQueryModel> QueryPartners(string sortOrder);
     }
 }

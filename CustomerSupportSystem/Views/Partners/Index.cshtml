@@ -14,8 +14,8 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th scope="col"><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-sortOrder="@ViewData["IdSort"]">@Html.DisplayNameFor(model => model.Partners.First().Id)</a></th>
-                <th scope="col"><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-sortOrder="@ViewData["NameSort"]">@Html.DisplayNameFor(model => model.Partners.First().Name)</a></th>
+                <th scope="col"><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-sortOrder="@Model.IdSort">@Html.DisplayNameFor(model => model.Partners.First().Id)</a></th>
+                <th scope="col"><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-sortOrder="@Model.NameSort">@Html.DisplayNameFor(model => model.Partners.First().Name)</a></th>
                 <th scope="col"><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-sortOrder="@ViewData["AddressSort"]">@Html.DisplayNameFor(model => model.Partners.First().Address)</a></th>
                 <th scope="col"><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-sortOrder="@ViewData["CitySort"]">@Html.DisplayNameFor(model => model.Partners.First().City)</a></th>
                 <th scope="col"><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-sortOrder="@ViewData["CountrySort"]">@Html.DisplayNameFor(model => model.Partners.First().Country)</a></th>

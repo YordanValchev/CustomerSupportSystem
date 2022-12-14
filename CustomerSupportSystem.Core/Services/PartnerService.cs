@@ -125,8 +125,10 @@ namespace CustomerSupportSystem.Core.Services
                 .FirstAsync();
         }
 
-        public async Task<PartnersQueryModel> QueryPartners()
+        public async Task<PartnersQueryModel> QueryPartners(string sortOrder)
         {
+            var model = new PartnersQueryModel();
+
             var partners = await repo.AllReadonly<Partner>()
                 .Include(partner => partner.Country)
                 .Include(partner => partner.Consultant)
@@ -145,10 +147,20 @@ namespace CustomerSupportSystem.Core.Services
                 })
                 .ToListAsync();
 
-            return new PartnersQueryModel()
+            model.IdSort = string.IsNullOrEmpty(sortOrder) ? "Id_Desc" : "";
+            model.NameSort = sortOrder == "Name" ? "Name_Desc" : "Name";
+
+            partners = sortOrder switch
             {
-                Partners = partners
+                "Name" => partners.OrderBy(s => s.Name).ToList(),
+                "Name_Desc" => partners.OrderByDescending(s => s.Name).ToList(),
+                "Id_Desc" => partners.OrderByDescending(s => s.Id).ToList(),
+                _ => partners.OrderBy(s => s.Id).ToList(),
             };
+
+            model.Partners = partners;
+
+            return model;
         }
     }
 }

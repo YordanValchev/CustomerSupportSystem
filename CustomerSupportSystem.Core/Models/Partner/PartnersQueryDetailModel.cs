@@ -2,6 +2,7 @@
 {
     public class PartnersQueryDetailModel
     {
+        [Display(Name = "#")]
         public int Id { get; set; }
 
         [Display(Name = "Partner name")]

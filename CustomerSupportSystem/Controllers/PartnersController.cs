@@ -1,4 +1,5 @@
 ﻿using CustomerSupportSystem.Core.Models.Partner;
+using Microsoft.Data.SqlClient;
 
 namespace CustomerSupportSystem.Controllers
 {
@@ -18,9 +19,9 @@ namespace CustomerSupportSystem.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            var model = await partnerService.QueryPartners();
+            var model = await partnerService.QueryPartners(sortOrder);
             
             return View(model);
         }
