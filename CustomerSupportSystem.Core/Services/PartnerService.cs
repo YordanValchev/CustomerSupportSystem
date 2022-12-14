@@ -145,15 +145,41 @@ namespace CustomerSupportSystem.Core.Services
                     Website = partner.Website,
                     Consultant = partner.Consultant == null ? string.Empty : $"{partner.Consultant.FirstName} {partner.Consultant.LastName}"
                 })
-                .ToListAsync();
+                .ToListAsync();                 
 
             model.IdSort = string.IsNullOrEmpty(sortOrder) ? "Id_Desc" : "";
             model.NameSort = sortOrder == "Name" ? "Name_Desc" : "Name";
+            model.AddressSort = sortOrder == "Address" ? "Address_Desc" : "Address";
+            model.CitySort = sortOrder == "City" ? "City_Desc" : "City";
+            model.CountrySort = sortOrder == "Country" ? "Country_Desc" : "Country";
+            model.PostcodeSort = sortOrder == "Postcode" ? "Postcode_Desc" : "Postcode";
+            model.RegistrationNumberSort = sortOrder == "RegistrationNumber" ? "RegistrationNumber_Desc" : "RegistrationNumber";
+            model.TaxNumberSort = sortOrder == "TaxNumber" ? "TaxNumber_Desc" : "TaxNumber";
+            model.WebsiteSort = sortOrder == "Website" ? "Website_Desc" : "Website";
+            model.ConsultantSort = sortOrder == "Consultant" ? "Consultant_Desc" : "Consultant";
 
             partners = sortOrder switch
             {
                 "Name" => partners.OrderBy(s => s.Name).ToList(),
+                "Address" => partners.OrderBy(s => s.Address).ToList(),
+                "City" => partners.OrderBy(s => s.City).ToList(),
+                "Country" => partners.OrderBy(s => s.Country).ToList(),
+                "Postcode" => partners.OrderBy(s => s.Postcode).ToList(),
+                "RegistrationNumber" => partners.OrderBy(s => s.RegistrationNumber).ToList(),
+                "TaxNumber" => partners.OrderBy(s => s.TaxNumber).ToList(),
+                "Website" => partners.OrderBy(s => s.Website).ToList(),
+                "Consultant" => partners.OrderBy(s => s.Consultant).ToList(),
+
                 "Name_Desc" => partners.OrderByDescending(s => s.Name).ToList(),
+                "Address_Desc" => partners.OrderByDescending(s => s.Address).ToList(),
+                "City_Desc" => partners.OrderByDescending(s => s.City).ToList(),
+                "Country_Desc" => partners.OrderByDescending(s => s.Country).ToList(),
+                "Postcode_Desc" => partners.OrderByDescending(s => s.Postcode).ToList(),
+                "RegistrationNumber_Desc" => partners.OrderByDescending(s => s.RegistrationNumber).ToList(),
+                "TaxNumber_Desc" => partners.OrderByDescending(s => s.TaxNumber).ToList(),
+                "Website_Desc" => partners.OrderByDescending(s => s.Website).ToList(),
+                "Consultant_Desc" => partners.OrderByDescending(s => s.Consultant).ToList(),
+
                 "Id_Desc" => partners.OrderByDescending(s => s.Id).ToList(),
                 _ => partners.OrderBy(s => s.Id).ToList(),
             };

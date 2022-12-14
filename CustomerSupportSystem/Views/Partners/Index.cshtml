@@ -7,39 +7,134 @@
 
 <div class="row">
     <ul class="nav nav-pills mb-auto justify-content-end">
-        <li class="nav-item"><a class="nav-link active" id="AddPartner" asp-area="" asp-controller="Partners" asp-action="Add">Add partner</a></li>
+        <li class="nav-item">
+            <a class="nav-link active" id="AddPartner" asp-area="" asp-controller="Partners" asp-action="Add">
+                Add partner
+            </a>
+        </li>
     </ul>
 </div>
+<br />
 <div class="text-center">
     <table class="table table-hover">
         <thead>
             <tr>
-                <th scope="col"><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-sortOrder="@Model.IdSort">@Html.DisplayNameFor(model => model.Partners.First().Id)</a></th>
-                <th scope="col"><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-sortOrder="@Model.NameSort">@Html.DisplayNameFor(model => model.Partners.First().Name)</a></th>
-                <th scope="col"><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-sortOrder="@ViewData["AddressSort"]">@Html.DisplayNameFor(model => model.Partners.First().Address)</a></th>
-                <th scope="col"><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-sortOrder="@ViewData["CitySort"]">@Html.DisplayNameFor(model => model.Partners.First().City)</a></th>
-                <th scope="col"><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-sortOrder="@ViewData["CountrySort"]">@Html.DisplayNameFor(model => model.Partners.First().Country)</a></th>
-                <th scope="col"><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-sortOrder="@ViewData["PostcodeSort"]">@Html.DisplayNameFor(model => model.Partners.First().Postcode)</a></th>
-                <th scope="col"><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-sortOrder="@ViewData["RegistrationNumberSort"]">@Html.DisplayNameFor(model => model.Partners.First().RegistrationNumber)</a></th>
-                <th scope="col"><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-sortOrder="@ViewData["TaxNumberSort"]">@Html.DisplayNameFor(model => model.Partners.First().TaxNumber)</a></th>
-                <th scope="col"><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-sortOrder="@ViewData["WebsiteSort"]">@Html.DisplayNameFor(model => model.Partners.First().Website)</a></th>
-                <th scope="col"><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-sortOrder="@ViewData["ConsultantSort"]">@Html.DisplayNameFor(model => model.Partners.First().Consultant)</a></th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index"
+                        asp-route-sortOrder="@Model.IdSort">
+                        @Html.DisplayNameFor(model => model.Partners.First().Id)
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index"
+                        asp-route-sortOrder="@Model.NameSort">
+                        @Html.DisplayNameFor(model => model.Partners.First().Name)
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index"
+                        asp-route-sortOrder="@Model.AddressSort">
+                        @Html.DisplayNameFor(model => model.Partners.First().Address)
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index"
+                        asp-route-sortOrder="@Model.CitySort">
+                        @Html.DisplayNameFor(model => model.Partners.First().City)
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index"
+                        asp-route-sortOrder="@Model.CountrySort">
+                        @Html.DisplayNameFor(model => model.Partners.First().Country)
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index"
+                        asp-route-sortOrder="@Model.PostcodeSort">
+                        @Html.DisplayNameFor(model => model.Partners.First().Postcode)
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index"
+                        asp-route-sortOrder="@Model.RegistrationNumberSort">
+                        @Html.DisplayNameFor(model => model.Partners.First().RegistrationNumber)
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index"
+                        asp-route-sortOrder="@Model.TaxNumberSort">
+                        @Html.DisplayNameFor(model => model.Partners.First().TaxNumber)
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index"
+                        asp-route-sortOrder="@Model.WebsiteSort">
+                        @Html.DisplayNameFor(model => model.Partners.First().Website)
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index"
+                        asp-route-sortOrder="@Model.ConsultantSort">
+                        @Html.DisplayNameFor(model => model.Partners.First().Consultant)
+                    </a>
+                </th>
             </tr>
         </thead>
         <tbody>
             @foreach(var partner in Model.Partners)
             {
                 <tr>
-                    <th scope="row"><a class="link-dark link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">@partner.Id</a></th>
-                    <td><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">@partner.Name</a></td>
-                    <td><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">@partner.Address</a></td>
-                    <td><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">@partner.City</a></td>
-                    <td><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">@partner.Country</a></td>
-                    <td><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">@partner.Postcode</a></td>
-                    <td><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">@partner.RegistrationNumber</a></td>
-                    <td><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">@partner.TaxNumber</a></td>
-                    <td><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">@partner.Website</a></td>
-                    <td><a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">@partner.Consultant</a></td>
+                    <th scope="row">
+                        <a class="link-dark link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">
+                            @partner.Id
+                        </a>
+                    </th>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">
+                            @partner.Name
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">
+                            @partner.Address
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">
+                            @partner.City
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">
+                            @partner.Country
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">
+                            @partner.Postcode
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">
+                            @partner.RegistrationNumber
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">
+                            @partner.TaxNumber
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">
+                            @partner.Website
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">
+                            @partner.Consultant
+                        </a>
+                    </td>
                 </tr>
             }
         </tbody>
