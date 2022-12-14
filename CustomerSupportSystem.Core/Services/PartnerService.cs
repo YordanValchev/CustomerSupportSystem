@@ -184,6 +184,75 @@ namespace CustomerSupportSystem.Core.Services
                 _ => partners.OrderBy(s => s.Id).ToList(),
             };
 
+            string ascOrderImageClass = "bi-caret-up";
+            string descOrderImageClass = "bi-caret-down";
+
+            switch (sortOrder)
+            {
+                case "Name":
+                    model.NameSortImageClass = ascOrderImageClass;
+                    break;
+                case "Address":
+                    model.AddressSortImageClass = ascOrderImageClass;
+                    break;
+                case "City":
+                    model.CitySortImageClass = ascOrderImageClass;
+                    break;
+                case "Country":
+                    model.CountrySortImageClass = ascOrderImageClass;
+                    break;
+                case "Postcode":
+                    model.PostcodeSortImageClass = ascOrderImageClass;
+                    break;
+                case "RegistrationNumber":
+                    model.RegistrationNumberSortImageClass = ascOrderImageClass;
+                    break;
+                case "TaxNumber":
+                    model.TaxNumberSortImageClass = ascOrderImageClass;
+                    break;
+                case "Website":
+                    model.WebsiteSortImageClass = ascOrderImageClass;
+                    break;
+                case "Consultant":
+                    model.ConsultantSortImageClass = ascOrderImageClass;
+                    break;
+
+                case "Name_Desc":
+                    model.NameSortImageClass = descOrderImageClass;
+                    break;
+                case "Address_Desc":
+                    model.AddressSortImageClass = descOrderImageClass;
+                    break;
+                case "City_Desc":
+                    model.CitySortImageClass = descOrderImageClass;
+                    break;
+                case "Country_Desc":
+                    model.CountrySortImageClass = descOrderImageClass;
+                    break;
+                case "Postcode_Desc":
+                    model.PostcodeSortImageClass = descOrderImageClass;
+                    break;
+                case "RegistrationNumber_Desc":
+                    model.RegistrationNumberSortImageClass = descOrderImageClass;
+                    break;
+                case "TaxNumber_Desc":
+                    model.TaxNumberSortImageClass = descOrderImageClass;
+                    break;
+                case "Website_Desc":
+                    model.WebsiteSortImageClass = descOrderImageClass;
+                    break;
+                case "Consultant_Desc":
+                    model.ConsultantSortImageClass = descOrderImageClass;
+                    break;
+
+                case "Id_Desc":
+                    model.IdSortImageClass = descOrderImageClass;
+                    break;
+                default:
+                    model.IdSortImageClass = ascOrderImageClass;
+                    break;
+            };
+
             model.Partners = partners;
 
             return model;

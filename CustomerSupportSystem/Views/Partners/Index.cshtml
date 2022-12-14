@@ -23,62 +23,73 @@
                     <a class="text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index"
                         asp-route-sortOrder="@Model.IdSort">
                         @Html.DisplayNameFor(model => model.Partners.First().Id)
+                        <i class="bi @Model.IdSortImageClass"></i>
                     </a>
                 </th>
                 <th scope="col">
                     <a class="text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index"
                         asp-route-sortOrder="@Model.NameSort">
                         @Html.DisplayNameFor(model => model.Partners.First().Name)
+                        <i class="bi @Model.NameSortImageClass"></i>
                     </a>
                 </th>
                 <th scope="col">
                     <a class="text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index"
                         asp-route-sortOrder="@Model.AddressSort">
                         @Html.DisplayNameFor(model => model.Partners.First().Address)
+                        <i class="bi @Model.AddressSortImageClass"></i>
                     </a>
                 </th>
                 <th scope="col">
                     <a class="text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index"
                         asp-route-sortOrder="@Model.CitySort">
                         @Html.DisplayNameFor(model => model.Partners.First().City)
+                        <i class="bi @Model.CitySortImageClass"></i>
                     </a>
                 </th>
                 <th scope="col">
                     <a class="text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index"
                         asp-route-sortOrder="@Model.CountrySort">
                         @Html.DisplayNameFor(model => model.Partners.First().Country)
+                        <i class="bi @Model.CountrySortImageClass"></i>
                     </a>
                 </th>
                 <th scope="col">
                     <a class="text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index"
                         asp-route-sortOrder="@Model.PostcodeSort">
                         @Html.DisplayNameFor(model => model.Partners.First().Postcode)
+                        <i class="bi @Model.PostcodeSortImageClass"></i>
                     </a>
                 </th>
                 <th scope="col">
                     <a class="text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index"
                         asp-route-sortOrder="@Model.RegistrationNumberSort">
                         @Html.DisplayNameFor(model => model.Partners.First().RegistrationNumber)
+                        <i class="bi @Model.RegistrationNumberSortImageClass"></i>
                     </a>
                 </th>
                 <th scope="col">
                     <a class="text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index"
                         asp-route-sortOrder="@Model.TaxNumberSort">
                         @Html.DisplayNameFor(model => model.Partners.First().TaxNumber)
+                        <i class="bi @Model.TaxNumberSortImageClass"></i>
                     </a>
                 </th>
                 <th scope="col">
                     <a class="text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index"
                         asp-route-sortOrder="@Model.WebsiteSort">
                         @Html.DisplayNameFor(model => model.Partners.First().Website)
+                        <i class="bi @Model.WebsiteSortImageClass"></i>
                     </a>
                 </th>
                 <th scope="col">
                     <a class="text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Index"
                         asp-route-sortOrder="@Model.ConsultantSort">
                         @Html.DisplayNameFor(model => model.Partners.First().Consultant)
+                        <i class="bi @Model.ConsultantSortImageClass"></i>
                     </a>
                 </th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
@@ -133,6 +144,11 @@
                     <td>
                         <a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">
                             @partner.Consultant
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id" title="Details">
+                            <i class="bi bi-card-text"></i>
                         </a>
                     </td>
                 </tr>

@@ -13,6 +13,17 @@
         public string? WebsiteSort { get; set; }
         public string? ConsultantSort { get; set; }
 
+        public string? IdSortImageClass { get; set; }
+        public string? NameSortImageClass { get; set; }
+        public string? AddressSortImageClass { get; set; }
+        public string? CitySortImageClass { get; set; }
+        public string? CountrySortImageClass { get; set; }
+        public string? PostcodeSortImageClass { get; set; }
+        public string? RegistrationNumberSortImageClass { get; set; }
+        public string? TaxNumberSortImageClass { get; set; }
+        public string? WebsiteSortImageClass { get; set; }
+        public string? ConsultantSortImageClass { get; set; }
+
         public IEnumerable<PartnersQueryDetailModel> Partners { get; set; } = new List<PartnersQueryDetailModel>();
     }
 }
