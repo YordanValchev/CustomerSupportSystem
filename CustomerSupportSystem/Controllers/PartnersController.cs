@@ -19,11 +19,21 @@ namespace CustomerSupportSystem.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index([FromQuery] PartnersQueryModel query)
         {
-            var model = await partnerService.QueryPartners(sortOrder);
-            
-            return View(model);
+            var result = await partnerService.QueryPartners(
+                query.SortOrder,
+                query.ConsultantId,
+                query.Filter,
+                query.CurrentPage,
+                PartnersQueryModel.RowsPerPage
+                );
+
+            query.TotalPartnersCount = result.TotalPartnersCount;
+            query.Consultants = await partnerService.AllConsultants();
+            query.Partners = result.Partners;
+
+            return View(query);
         }
 
         [HttpGet]

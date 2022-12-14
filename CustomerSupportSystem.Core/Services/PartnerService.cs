@@ -1,5 +1,6 @@
 ﻿using CustomerSupportSystem.Core.Models.Partner;
 using CustomerSupportSystem.Infrastructure.Data.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Mail;
 
@@ -125,27 +126,34 @@ namespace CustomerSupportSystem.Core.Services
                 .FirstAsync();
         }
 
-        public async Task<PartnersQueryModel> QueryPartners(string sortOrder)
+        public async Task<PartnersQueryModel> QueryPartners(string? sortOrder = null, int consultantId = -1, string? filter = null, int currentPage = 1, int rowsPerPage = 20)
         {
             var model = new PartnersQueryModel();
 
-            var partners = await repo.AllReadonly<Partner>()
-                .Include(partner => partner.Country)
-                .Include(partner => partner.Consultant)
-                .Select(partner => new PartnersQueryDetailModel()
-                {
-                    Id = partner.Id,
-                    Name = partner.Name,
-                    Address = partner.Address,
-                    City = partner.City,
-                    Postcode = partner.Postcode,
-                    Country = partner.Country == null ? string.Empty : partner.Country.Name,
-                    RegistrationNumber = partner.RegistrationNumber,
-                    TaxNumber = partner.TaxNumber,
-                    Website = partner.Website,
-                    Consultant = partner.Consultant == null ? string.Empty : $"{partner.Consultant.FirstName} {partner.Consultant.LastName}"
-                })
-                .ToListAsync();                 
+            var partners = repo.AllReadonly<Partner>();
+
+            if (await ConsultantExists(consultantId))
+            {
+                partners = partners
+                    .Where(h => h.Consultant != null && h.Consultant.Id == consultantId);
+            }
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filter = $"%{filter.ToLower()}%";
+
+                partners = partners
+                    .Where(p => 
+                        EF.Functions.Like(p.Name.ToLower(), filter) ||
+                        EF.Functions.Like(p.Address == null ? string.Empty : p.Address.ToLower(), filter) ||
+                        EF.Functions.Like(p.City == null ? string.Empty : p.City.ToLower(), filter) ||
+                        EF.Functions.Like(p.Country == null ? string.Empty : p.Country.Name.ToLower(), filter) ||
+                        EF.Functions.Like(p.Postcode == null ? string.Empty : p.Postcode.ToLower(), filter) ||
+                        EF.Functions.Like(p.RegistrationNumber == null ? string.Empty : p.RegistrationNumber.ToLower(), filter) ||
+                        EF.Functions.Like(p.TaxNumber == null ? string.Empty : p.TaxNumber.ToLower(), filter) ||
+                        EF.Functions.Like(p.Website == null ? string.Empty : p.Website.ToLower(), filter)
+                        );
+            }
 
             model.IdSort = string.IsNullOrEmpty(sortOrder) ? "Id_Desc" : "";
             model.NameSort = sortOrder == "Name" ? "Name_Desc" : "Name";
@@ -160,28 +168,28 @@ namespace CustomerSupportSystem.Core.Services
 
             partners = sortOrder switch
             {
-                "Name" => partners.OrderBy(s => s.Name).ToList(),
-                "Address" => partners.OrderBy(s => s.Address).ToList(),
-                "City" => partners.OrderBy(s => s.City).ToList(),
-                "Country" => partners.OrderBy(s => s.Country).ToList(),
-                "Postcode" => partners.OrderBy(s => s.Postcode).ToList(),
-                "RegistrationNumber" => partners.OrderBy(s => s.RegistrationNumber).ToList(),
-                "TaxNumber" => partners.OrderBy(s => s.TaxNumber).ToList(),
-                "Website" => partners.OrderBy(s => s.Website).ToList(),
-                "Consultant" => partners.OrderBy(s => s.Consultant).ToList(),
+                "Name" => partners.OrderBy(s => s.Name),
+                "Address" => partners.OrderBy(s => s.Address),
+                "City" => partners.OrderBy(s => s.City),
+                "Country" => partners.OrderBy(s => s.Country == null ? string.Empty : s.Country.Name),
+                "Postcode" => partners.OrderBy(s => s.Postcode),
+                "RegistrationNumber" => partners.OrderBy(s => s.RegistrationNumber),
+                "TaxNumber" => partners.OrderBy(s => s.TaxNumber),
+                "Website" => partners.OrderBy(s => s.Website),
+                "Consultant" => partners.OrderBy(s => s.Consultant),
 
-                "Name_Desc" => partners.OrderByDescending(s => s.Name).ToList(),
-                "Address_Desc" => partners.OrderByDescending(s => s.Address).ToList(),
-                "City_Desc" => partners.OrderByDescending(s => s.City).ToList(),
-                "Country_Desc" => partners.OrderByDescending(s => s.Country).ToList(),
-                "Postcode_Desc" => partners.OrderByDescending(s => s.Postcode).ToList(),
-                "RegistrationNumber_Desc" => partners.OrderByDescending(s => s.RegistrationNumber).ToList(),
-                "TaxNumber_Desc" => partners.OrderByDescending(s => s.TaxNumber).ToList(),
-                "Website_Desc" => partners.OrderByDescending(s => s.Website).ToList(),
-                "Consultant_Desc" => partners.OrderByDescending(s => s.Consultant).ToList(),
+                "Name_Desc" => partners.OrderByDescending(s => s.Name),
+                "Address_Desc" => partners.OrderByDescending(s => s.Address),
+                "City_Desc" => partners.OrderByDescending(s => s.City),
+                "Country_Desc" => partners.OrderByDescending(s => s.Country),
+                "Postcode_Desc" => partners.OrderByDescending(s => s.Postcode),
+                "RegistrationNumber_Desc" => partners.OrderByDescending(s => s.RegistrationNumber),
+                "TaxNumber_Desc" => partners.OrderByDescending(s => s.TaxNumber),
+                "Website_Desc" => partners.OrderByDescending(s => s.Website),
+                "Consultant_Desc" => partners.OrderByDescending(s => s.Consultant),
 
-                "Id_Desc" => partners.OrderByDescending(s => s.Id).ToList(),
-                _ => partners.OrderBy(s => s.Id).ToList(),
+                "Id_Desc" => partners.OrderByDescending(s => s.Id),
+                _ => partners.OrderBy(s => s.Id),
             };
 
             string ascOrderImageClass = "bi-caret-up";
@@ -253,7 +261,25 @@ namespace CustomerSupportSystem.Core.Services
                     break;
             };
 
-            model.Partners = partners;
+            model.Partners = await partners
+                .Skip((currentPage - 1) * rowsPerPage)
+                .Take(rowsPerPage)
+                .Select(partner => new PartnersQueryDetailModel()
+                {
+                    Id = partner.Id,
+                    Name = partner.Name,
+                    Address = partner.Address,
+                    City = partner.City,
+                    Postcode = partner.Postcode,
+                    Country = partner.Country == null ? string.Empty : partner.Country.Name,
+                    RegistrationNumber = partner.RegistrationNumber,
+                    TaxNumber = partner.TaxNumber,
+                    Website = partner.Website,
+                    Consultant = partner.Consultant == null ? string.Empty : $"{partner.Consultant.FirstName} {partner.Consultant.LastName}"
+                })
+                .ToListAsync();
+
+            model.TotalPartnersCount = await partners.CountAsync();
 
             return model;
         }

@@ -2,6 +2,8 @@
 {
     public class PartnersQueryModel
     {
+        public string? SortOrder { get; set; }
+
         public string? IdSort { get; set; }
         public string? NameSort { get; set; }
         public string? AddressSort { get; set; }
@@ -24,6 +26,18 @@
         public string? WebsiteSortImageClass { get; set; }
         public string? ConsultantSortImageClass { get; set; }
 
+        public int ConsultantId { get; set; } = -1;
+
+        public string? Filter { get; set; }
+
+        public int CurrentPage { get; set; } = 1;
+
+        public static int RowsPerPage { get; } = 20;
+
+        public int TotalPartnersCount { get; set; }
+
         public IEnumerable<PartnersQueryDetailModel> Partners { get; set; } = new List<PartnersQueryDetailModel>();
+
+        public IEnumerable<PartnerConsultantsModel> Consultants { get; set; } = new List<PartnerConsultantsModel>();
     }
 }
