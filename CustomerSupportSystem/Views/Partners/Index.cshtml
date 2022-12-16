@@ -178,52 +178,59 @@
     </table>
 </div>
 
-@{
+@if (!Model.Partners.Any())
+{
+    <h6 class="text-center">No records found by the given criteria!</h6>
+}
+else
+{
     var totalPages = Math.Ceiling((double)Model.TotalPartnersCount / PartnersQueryModel.RowsPerPage);
+
+    <div class="row">
+        <nav aria-label="Table navigation">
+            <ul class="pagination">
+
+                @if (Model.CurrentPage > 1)
+                {
+                    int previousPage = Model.CurrentPage - 1;
+
+                    <li class="page-item">
+                        <a class="page-link" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-currentPage="@previousPage">Previous</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link">Previous</a>
+                    </li>
+                }
+
+                @for (int currentPage = 1; currentPage <= totalPages; currentPage++)
+                {
+                    string activeClass = currentPage == Model.CurrentPage ? "active" : string.Empty;
+
+                    <li class="page-item @activeClass">
+                        <a class="page-link" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-currentPage="@currentPage">@currentPage</a>
+                    </li>
+                }
+
+                @if (Model.CurrentPage < totalPages)
+                {
+                    int nextPage = Model.CurrentPage + 1;
+
+                    <li class="page-item">
+                        <a class="page-link" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-currentPage="@nextPage">Next</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link">Next</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
 }
 
-<div class="row">
-    <nav aria-label="Table navigation">
-        <ul class="pagination">
 
-            @if (Model.CurrentPage > 1)
-            {
-                int previousPage = Model.CurrentPage - 1;
-
-                <li class="page-item">
-                    <a class="page-link" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-currentPage="@previousPage">Previous</a>
-                </li>
-            }
-            else
-            {
-                <li class="page-item disabled">
-                    <a class="page-link">Previous</a>
-                </li>
-            }
-
-            @for (int currentPage = 1; currentPage <= totalPages; currentPage++)
-            {
-                string activeClass = currentPage == Model.CurrentPage ? "active" : string.Empty;
-
-                <li class="page-item @activeClass">
-                    <a class="page-link" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-currentPage="@currentPage">@currentPage</a>
-                </li>
-            }
-
-            @if (Model.CurrentPage < totalPages)
-            {
-                int nextPage = Model.CurrentPage + 1;
-
-                <li class="page-item">
-                    <a class="page-link" asp-area="" asp-controller="Partners" asp-action="Index" asp-route-currentPage="@nextPage">Next</a>
-                </li>
-            }
-            else
-            {
-                <li class="page-item disabled">
-                    <a class="page-link">Next</a>
-                </li>
-            }
-        </ul>
-    </nav>
-</div>
