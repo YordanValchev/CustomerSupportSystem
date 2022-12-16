@@ -32,6 +32,7 @@ namespace CustomerSupportSystem.Controllers
             query.TotalPartnersCount = result.TotalPartnersCount;
             query.Consultants = await partnerService.AllConsultants();
             query.Partners = result.Partners;
+            query.SortFields = result.SortFields;
 
             return View(query);
         }

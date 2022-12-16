@@ -135,7 +135,7 @@ namespace CustomerSupportSystem.Core.Services
             if (await ConsultantExists(consultantId))
             {
                 partners = partners
-                    .Where(h => h.Consultant != null && h.Consultant.Id == consultantId);
+                    .Where(p => p.Consultant != null && p.Consultant.Id == consultantId);
             }
 
             if (!string.IsNullOrEmpty(filter))
@@ -155,16 +155,16 @@ namespace CustomerSupportSystem.Core.Services
                         );
             }
 
-            model.IdSort = string.IsNullOrEmpty(sortOrder) ? "Id_Desc" : "";
-            model.NameSort = sortOrder == "Name" ? "Name_Desc" : "Name";
-            model.AddressSort = sortOrder == "Address" ? "Address_Desc" : "Address";
-            model.CitySort = sortOrder == "City" ? "City_Desc" : "City";
-            model.CountrySort = sortOrder == "Country" ? "Country_Desc" : "Country";
-            model.PostcodeSort = sortOrder == "Postcode" ? "Postcode_Desc" : "Postcode";
-            model.RegistrationNumberSort = sortOrder == "RegistrationNumber" ? "RegistrationNumber_Desc" : "RegistrationNumber";
-            model.TaxNumberSort = sortOrder == "TaxNumber" ? "TaxNumber_Desc" : "TaxNumber";
-            model.WebsiteSort = sortOrder == "Website" ? "Website_Desc" : "Website";
-            model.ConsultantSort = sortOrder == "Consultant" ? "Consultant_Desc" : "Consultant";
+            model.SortFields.Id = string.IsNullOrEmpty(sortOrder) ? "Id_Desc" : "";
+            model.SortFields.Name = sortOrder == "Name" ? "Name_Desc" : "Name";
+            model.SortFields.Address = sortOrder == "Address" ? "Address_Desc" : "Address";
+            model.SortFields.City = sortOrder == "City" ? "City_Desc" : "City";
+            model.SortFields.Country = sortOrder == "Country" ? "Country_Desc" : "Country";
+            model.SortFields.Postcode = sortOrder == "Postcode" ? "Postcode_Desc" : "Postcode";
+            model.SortFields.RegistrationNumber = sortOrder == "RegistrationNumber" ? "RegistrationNumber_Desc" : "RegistrationNumber";
+            model.SortFields.TaxNumber = sortOrder == "TaxNumber" ? "TaxNumber_Desc" : "TaxNumber";
+            model.SortFields.Website = sortOrder == "Website" ? "Website_Desc" : "Website";
+            model.SortFields.Consultant = sortOrder == "Consultant" ? "Consultant_Desc" : "Consultant";
 
             partners = sortOrder switch
             {
@@ -198,66 +198,66 @@ namespace CustomerSupportSystem.Core.Services
             switch (sortOrder)
             {
                 case "Name":
-                    model.NameSortImageClass = ascOrderImageClass;
+                    model.SortFields.NameImageClass = ascOrderImageClass;
                     break;
                 case "Address":
-                    model.AddressSortImageClass = ascOrderImageClass;
+                    model.SortFields.AddressImageClass = ascOrderImageClass;
                     break;
                 case "City":
-                    model.CitySortImageClass = ascOrderImageClass;
+                    model.SortFields.CityImageClass = ascOrderImageClass;
                     break;
                 case "Country":
-                    model.CountrySortImageClass = ascOrderImageClass;
+                    model.SortFields.CountryImageClass = ascOrderImageClass;
                     break;
                 case "Postcode":
-                    model.PostcodeSortImageClass = ascOrderImageClass;
+                    model.SortFields.PostcodeImageClass = ascOrderImageClass;
                     break;
                 case "RegistrationNumber":
-                    model.RegistrationNumberSortImageClass = ascOrderImageClass;
+                    model.SortFields.RegistrationNumberImageClass = ascOrderImageClass;
                     break;
                 case "TaxNumber":
-                    model.TaxNumberSortImageClass = ascOrderImageClass;
+                    model.SortFields.TaxNumberImageClass = ascOrderImageClass;
                     break;
                 case "Website":
-                    model.WebsiteSortImageClass = ascOrderImageClass;
+                    model.SortFields.WebsiteImageClass = ascOrderImageClass;
                     break;
                 case "Consultant":
-                    model.ConsultantSortImageClass = ascOrderImageClass;
+                    model.SortFields.ConsultantImageClass = ascOrderImageClass;
                     break;
 
                 case "Name_Desc":
-                    model.NameSortImageClass = descOrderImageClass;
+                    model.SortFields.NameImageClass = descOrderImageClass;
                     break;
                 case "Address_Desc":
-                    model.AddressSortImageClass = descOrderImageClass;
+                    model.SortFields.AddressImageClass = descOrderImageClass;
                     break;
                 case "City_Desc":
-                    model.CitySortImageClass = descOrderImageClass;
+                    model.SortFields.CityImageClass = descOrderImageClass;
                     break;
                 case "Country_Desc":
-                    model.CountrySortImageClass = descOrderImageClass;
+                    model.SortFields.CountryImageClass = descOrderImageClass;
                     break;
                 case "Postcode_Desc":
-                    model.PostcodeSortImageClass = descOrderImageClass;
+                    model.SortFields.PostcodeImageClass = descOrderImageClass;
                     break;
                 case "RegistrationNumber_Desc":
-                    model.RegistrationNumberSortImageClass = descOrderImageClass;
+                    model.SortFields.RegistrationNumberImageClass = descOrderImageClass;
                     break;
                 case "TaxNumber_Desc":
-                    model.TaxNumberSortImageClass = descOrderImageClass;
+                    model.SortFields.TaxNumberImageClass = descOrderImageClass;
                     break;
                 case "Website_Desc":
-                    model.WebsiteSortImageClass = descOrderImageClass;
+                    model.SortFields.WebsiteImageClass = descOrderImageClass;
                     break;
                 case "Consultant_Desc":
-                    model.ConsultantSortImageClass = descOrderImageClass;
+                    model.SortFields.ConsultantImageClass = descOrderImageClass;
                     break;
 
                 case "Id_Desc":
-                    model.IdSortImageClass = descOrderImageClass;
+                    model.SortFields.IdImageClass = descOrderImageClass;
                     break;
                 default:
-                    model.IdSortImageClass = ascOrderImageClass;
+                    model.SortFields.IdImageClass = ascOrderImageClass;
                     break;
             };
 

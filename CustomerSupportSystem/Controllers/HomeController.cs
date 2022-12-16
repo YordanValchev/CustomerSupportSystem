@@ -1,29 +1,16 @@
-﻿using CustomerSupportSystem.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-
-namespace CustomerSupportSystem.Controllers
+﻿namespace CustomerSupportSystem.Controllers
 {
-    [Authorize]
+    [AllowAnonymous]
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-
         public IActionResult Index()
         {
-            return View();
-        }
+            if(User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Tickets");
+            }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return RedirectToPage("/Account/Login", new { area = "Identity" });
         }
     }
 }
