@@ -1,4 +1,5 @@
 ﻿global using CustomerSupportSystem.Core.Contracts;
+global using CustomerSupportSystem.Core.Models.Contact;
 global using CustomerSupportSystem.Core.Services;
 global using CustomerSupportSystem.Infrastructure.Data;
 global using CustomerSupportSystem.Infrastructure.Data.Models;

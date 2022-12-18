@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Partners";
-    ViewData["ActivePage"] = NavPagesService.AllPartners;
+    ViewData["ActivePage"] = NavPagesService.Partners;
 }
 
 <div class="row">
@@ -180,7 +180,7 @@
 
 @if (!Model.Partners.Any())
 {
-    <h6 class="text-center">No records found by the given criteria!</h6>
+    <h6 class="text-center">No records found!</h6>
 }
 else
 {

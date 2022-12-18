@@ -45,16 +45,16 @@ namespace CustomerSupportSystem.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<bool> ConsultantExists(int consultantId)
+        public async Task<bool> ConsultantExists(int id)
         {
             return await repo.AllReadonly<Employee>()
-                .AnyAsync(e => e.Id == consultantId);
+                .AnyAsync(e => e.Id == id);
         }
 
-        public async Task<bool> CountryExists(int countryId)
+        public async Task<bool> CountryExists(int id)
         {
             return await repo.AllReadonly<Country>()
-                .AnyAsync(e => e.Id == countryId);
+                .AnyAsync(e => e.Id == id);
         }
 
         public async Task<int> Create(PartnerModel model)
@@ -86,6 +86,26 @@ namespace CustomerSupportSystem.Core.Services
             }
 
             return partner.Id;
+        }
+
+        public async Task CreatePartnerContact(int partnerId, int contactId)
+        {
+            var partnerContact = new PartnerContact()
+            {
+                PartnerId = partnerId,
+                ContactId = contactId
+            };
+
+            try
+            {
+                await repo.AddAsync(partnerContact);
+                await repo.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(nameof(Create), ex);
+                throw new ApplicationException("Database failed to save info", ex);
+            }
         }
 
         public async Task<PartnerDetailsModel> PartnerDetails(int id)
@@ -124,6 +144,12 @@ namespace CustomerSupportSystem.Core.Services
 
                 })
                 .FirstAsync();
+        }
+
+        public async Task<bool> PartnerExists(int id)
+        {
+            return await repo.AllReadonly<Partner>()
+                .AnyAsync(e => e.Id == id);
         }
 
         public async Task<PartnersQueryModel> QueryPartners(string? sortOrder = null, int consultantId = -1, string? filter = null, int currentPage = 1, int rowsPerPage = 20)

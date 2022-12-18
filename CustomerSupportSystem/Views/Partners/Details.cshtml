@@ -1,13 +1,13 @@
 ﻿@model PartnerDetailsModel
 
 @{
-    ViewBag.Title = "Partner details";
-    ViewData["ActivePage"] = NavPagesService.AllPartners;
+    ViewData["Title"] = "Partner details";
+    ViewData["ActivePage"] = NavPagesService.Partners;
 }
 
 <h2 class="text-center mb-3">@ViewBag.Title</h2>
 <div class="row">
-    <div class="col-md-7">
+    <div class="col-md-9">
         <form>
             <div class="row g-3">
                 <input type="hidden" asp-for="@Model.Id" />
@@ -56,14 +56,14 @@
                     <span asp-validation-for="SubscriptionContractNumber" class="small text-danger"></span>
                 </div>
                 <div class="col">
-                    <input asp-for="@Model.IsSubscriptionActive" class="form-check-input" type="checkbox" readonly>
+                    <input asp-for="@Model.IsSubscriptionActive" class="form-check-input" type="checkbox" disabled>
                     <label asp-for="@Model.IsSubscriptionActive" class="form-check-label"></label>
                 </div>
             </div>
             <hr class="my-4" />
         </form>
     </div>
-    <div class="col-md-5">
+    <div class="col-md-3">
         <h4 class="text-center mb-3">Contacts</h4>
         <ul class="list-group mb-3">
             @foreach(var contact in Model.Contacts)
@@ -76,6 +76,12 @@
                 </li>
             }
         </ul>
+        <div class="text-center">
+            <a class="btn btn-primary" role="button" id="AddContact" asp-area="" asp-controller="Contacts" asp-action="Add" asp-route-partnerId="@Model.Id">
+                <i class="bi bi-person-add"></i>
+                Add contact
+            </a>
+        </div>
     </div>
 </div>
 

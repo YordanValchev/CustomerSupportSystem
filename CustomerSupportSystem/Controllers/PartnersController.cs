@@ -3,7 +3,7 @@ using Microsoft.Data.SqlClient;
 
 namespace CustomerSupportSystem.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrator,Support")]
     public class PartnersController : Controller
     {
         private readonly IPartnerService partnerService;
@@ -40,6 +40,11 @@ namespace CustomerSupportSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
+            if ((await partnerService.PartnerExists(id)) == false)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             var model = await partnerService.PartnerDetails(id);
 
             return View(model);

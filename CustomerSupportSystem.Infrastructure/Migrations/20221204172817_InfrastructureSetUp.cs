@@ -387,7 +387,7 @@ namespace CustomerSupportSystem.Infrastructure.Migrations
                 {
                     { "361c7033-86bb-42e0-a264-3f560e1da74d", "e43e77f0-405c-4b87-b845-82a0106341d8", "Support", "SUPPORT" },
                     { "5b35eb07-6f63-41eb-8a44-5178055f3019", "559fa7e0-d92b-42fa-95c2-560501bfb78d", "Client", "CLIENT" },
-                    { "c838fb22-a99a-42d7-9c00-9bae1b092cfd", "6271cd86-26b1-47ee-8663-aa4693b1cd66", "Admin", "ADMIN" }
+                    { "c838fb22-a99a-42d7-9c00-9bae1b092cfd", "6271cd86-26b1-47ee-8663-aa4693b1cd66", "Administrator", "ADMINISTRATOR" }
                 });
 
             migrationBuilder.InsertData(
