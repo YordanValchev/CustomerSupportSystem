@@ -14,9 +14,13 @@ namespace CustomerSupportSystem.Core.Contracts
 
         Task<int> Create(PartnerModel model);
 
+        Task Edit(int partnerId, PartnerModel model);
+
         Task<bool> PartnerExists(int id);
 
         Task<PartnerDetailsModel> PartnerDetails(int id);
+
+        Task<IEnumerable<PartnerDetailsContactsModel>> PartnerDetailsContacts(int id);
 
         Task<PartnersQueryModel> QueryPartners(string? sortOrder, int consultantId, string? filter, int currentPage, int rowsPerPage);
 

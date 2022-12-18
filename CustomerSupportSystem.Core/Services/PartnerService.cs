@@ -2,7 +2,9 @@
 using CustomerSupportSystem.Infrastructure.Data.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 using System.Net.Mail;
+using System.Xml.Linq;
 
 namespace CustomerSupportSystem.Core.Services
 {
@@ -88,6 +90,25 @@ namespace CustomerSupportSystem.Core.Services
             return partner.Id;
         }
 
+        public async Task Edit(int partnerId, PartnerModel model)
+        {
+            var partner = await repo.GetByIdAsync<Partner>(partnerId);
+
+            partner.Name = model.Name;
+            partner.Address = model.Address;
+            partner.City = model.City;
+            partner.Postcode = model.Postcode;
+            partner.CountryId = model.CountryId;
+            partner.RegistrationNumber = model.RegistrationNumber;
+            partner.TaxNumber = model.TaxNumber;
+            partner.Website = model.Website;
+            partner.ConsultantId = model.ConsultantId;
+            partner.SubscriptionContractNumber = model.SubscriptionContractNumber;
+            partner.IsSubscriptionActive = model.IsSubscriptionActive;
+
+            await repo.SaveChangesAsync();
+        }
+
         public async Task CreatePartnerContact(int partnerId, int contactId)
         {
             var partnerContact = new PartnerContact()
@@ -111,8 +132,6 @@ namespace CustomerSupportSystem.Core.Services
         public async Task<PartnerDetailsModel> PartnerDetails(int id)
         {
             return await repo.AllReadonly<Partner>()
-                .Include(partner => partner.PartnerContacts)
-                .ThenInclude(partnerContacts => partnerContacts.Contact)
                 .Include(partner => partner.Country)
                 .Include(partner => partner.Consultant)
                 .Where(partner => partner.Id == id)
@@ -123,27 +142,33 @@ namespace CustomerSupportSystem.Core.Services
                     Address = partner.Address,
                     City = partner.City,
                     Postcode = partner.Postcode,
+                    CountryId = partner.CountryId,
                     Country = partner.Country == null ? string.Empty : partner.Country.Name,
                     RegistrationNumber = partner.RegistrationNumber,
                     TaxNumber = partner.TaxNumber,
                     Website = partner.Website,
+                    ConsultantId = partner.ConsultantId,
                     Consultant = partner.Consultant == null ? string.Empty : $"{partner.Consultant.FirstName} {partner.Consultant.LastName}",
                     SubscriptionContractNumber = partner.SubscriptionContractNumber,
-                    IsSubscriptionActive = partner.IsSubscriptionActive ?? false,
-                    Contacts = partner.PartnerContacts
-                        .Select(partnerContact => new PartnerDetailsContactsModel()
-                        {
-                            Name = $"{partnerContact.Contact.FirstName} {partnerContact.Contact.LastName}",
-                            PhoneNumber = partnerContact.Contact.PhoneNumbers.Any() ? partnerContact.Contact.PhoneNumbers.FirstOrDefault().Number : string.Empty,
-                            EmailAddress = partnerContact.Contact.Emails.Any() ? partnerContact.Contact.Emails.FirstOrDefault().EmailAddress : string.Empty,
-                            JobTitle = partnerContact.Contact.JobTitle == null ? string.Empty : partnerContact.Contact.JobTitle.Title,
-                            IsUser = partnerContact.Contact.User == null ? false : true
-                        })
-                        .ToList()
-
-
+                    IsSubscriptionActive = partner.IsSubscriptionActive ?? false
                 })
                 .FirstAsync();
+        }
+
+        public async Task<IEnumerable<PartnerDetailsContactsModel>> PartnerDetailsContacts(int id)
+        {
+            return await repo.AllReadonly<PartnerContact>()
+                .Include(partnerContact => partnerContact.Contact)
+                .Where(partnerContact => partnerContact.PartnerId == id)
+                .Select(partnerContact => new PartnerDetailsContactsModel()
+                {
+                    Name = $"{partnerContact.Contact.FirstName} {partnerContact.Contact.LastName}",
+                    PhoneNumber = partnerContact.Contact.PhoneNumbers.Any() ? partnerContact.Contact.PhoneNumbers.FirstOrDefault().Number : string.Empty,
+                    EmailAddress = partnerContact.Contact.Emails.Any() ? partnerContact.Contact.Emails.FirstOrDefault().EmailAddress : string.Empty,
+                    JobTitle = partnerContact.Contact.JobTitle == null ? string.Empty : partnerContact.Contact.JobTitle.Title,
+                    IsUser = partnerContact.Contact.User == null ? false : true
+                })
+                .ToListAsync();
         }
 
         public async Task<bool> PartnerExists(int id)

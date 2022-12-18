@@ -11,6 +11,8 @@
 
         public string? City { get; set; }
 
+        public int? CountryId { get; set; }
+
         public string? Country { get; set; }
 
         public string? Postcode { get; set; }
@@ -22,6 +24,8 @@
         public string? TaxNumber { get; set; }
 
         public string? Website { get; set; }
+
+        public int? ConsultantId { get; set; }
 
         public string? Consultant { get; set; }
 

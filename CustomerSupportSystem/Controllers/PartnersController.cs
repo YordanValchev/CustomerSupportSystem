@@ -1,4 +1,5 @@
 ﻿using CustomerSupportSystem.Core.Models.Partner;
+using CustomerSupportSystem.Infrastructure.Data.Models;
 using Microsoft.Data.SqlClient;
 
 namespace CustomerSupportSystem.Controllers
@@ -46,6 +47,9 @@ namespace CustomerSupportSystem.Controllers
             }
 
             var model = await partnerService.PartnerDetails(id);
+            var contacts = await partnerService.PartnerDetailsContacts(id);
+
+            model.Contacts = contacts;
 
             return View(model);
         }
@@ -75,17 +79,74 @@ namespace CustomerSupportSystem.Controllers
 
             if ((await partnerService.CountryExists(model.CountryId)) == false)
             {
-                ModelState.AddModelError(nameof(model.CountryId), "Country does not exists");
+                ModelState.AddModelError(nameof(model.CountryId), "The country does not exists");
             }
 
             if ((await partnerService.ConsultantExists(model.ConsultantId)) == false)
             {
-                ModelState.AddModelError(nameof(model.ConsultantId), "Country does not exists");
+                ModelState.AddModelError(nameof(model.ConsultantId), "The consultant does not exists");
             }
 
             int id = await partnerService.Create(model);
 
             return RedirectToAction(nameof(Details), new { id });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            if ((await partnerService.PartnerExists(id)) == false)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var partnerDetails = await partnerService.PartnerDetails(id);
+
+            var model = new PartnerModel()
+            {
+                Id = partnerDetails.Id,
+                Name = partnerDetails.Name,
+                Address = partnerDetails.Address ?? string.Empty,
+                City = partnerDetails.City ?? string.Empty,
+                CountryId = partnerDetails.CountryId ?? -1,
+                Postcode = partnerDetails.Postcode ?? string.Empty,
+                RegistrationNumber = partnerDetails.RegistrationNumber,
+                TaxNumber = partnerDetails.TaxNumber,
+                Website = partnerDetails.Website,
+                ConsultantId = partnerDetails.ConsultantId ?? -1,
+                SubscriptionContractNumber = partnerDetails.SubscriptionContractNumber,
+                IsSubscriptionActive = partnerDetails.IsSubscriptionActive,
+                Countries = await partnerService.AllCountries(),
+                Consultants = await partnerService.AllConsultants()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(PartnerModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.Countries = await partnerService.AllCountries();
+                model.Consultants = await partnerService.AllConsultants();
+
+                return View(model);
+            }
+
+            if ((await partnerService.CountryExists(model.CountryId)) == false)
+            {
+                ModelState.AddModelError(nameof(model.CountryId), "The country does not exists");
+            }
+
+            if ((await partnerService.ConsultantExists(model.ConsultantId)) == false)
+            {
+                ModelState.AddModelError(nameof(model.ConsultantId), "The consultant does not exists");
+            }
+
+            await partnerService.Edit(model.Id, model);
+
+            return RedirectToAction(nameof(Details), new { id = model.Id });
         }
     }
 }
