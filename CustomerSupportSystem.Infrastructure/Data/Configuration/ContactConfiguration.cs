@@ -4,6 +4,10 @@
     {
         public void Configure(EntityTypeBuilder<Contact> builder)
         {
+            builder
+                .Property(p => p.IsActive)
+                .HasDefaultValue(true);
+
             builder.HasOne(d => d.JobTitle)
                 .WithMany(p => p.Contacts)
                 .HasForeignKey(d => d.JobTitleId)

@@ -1,0 +1,12 @@
+﻿@{
+    ViewData["Title"] = "Edit contact";
+    ViewData["ActivePage"] = NavPagesService.Contacts;
+}
+
+<h2 class="text-center mb-3">@ViewBag.Title</h2>
+
+<partial name="_ContactFormPartial" model="@Model" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -31,11 +31,13 @@
                     <input asp-for="EmailAddress" class="form-control">
                     <span asp-validation-for="EmailAddress" class="small text-danger"></span>
                 </div>
+                <input type="hidden" asp-for="@Model.CurrentEmailAddress" />
                 <div class="col-12">
                     <label asp-for="PhoneNumber" class="form-label"></label>
                     <input asp-for="PhoneNumber" class="form-control">
                     <span asp-validation-for="PhoneNumber" class="small text-danger"></span>
                 </div>
+                <input type="hidden" asp-for="@Model.CurrentPhoneNumber" />
             </div>
             <hr class="my-4" />
             <div class="row row-cols-1">
@@ -43,6 +45,7 @@
                     <input asp-for="IsUser" class="form-check-input" type="checkbox" value="true" checked="@Model.IsUser">
                     <label asp-for="IsUser" class="form-check-label"></label>
                     <span asp-validation-for="IsUser" class="small text-danger"></span>
+                    <input type="hidden" asp-for="@Model.UserId" />
                 </div>
             </div>
             <hr class="my-4" />

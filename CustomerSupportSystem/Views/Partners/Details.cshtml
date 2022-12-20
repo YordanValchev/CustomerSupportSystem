@@ -75,21 +75,20 @@
         <ul class="list-group mb-3">
             @foreach(var contact in Model.Contacts)
             {
-                <li class="list-group-item d-flex">
+                <li class="list-group-item">
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="col-md-10">
                             <h6 class="my-0">@contact.Name</h6>
                             <small class="text-muted">@contact.JobTitle</small>
+                            <br />
+                            <small class="text-muted"><i class="bi bi-envelope"></i> @contact.EmailAddress</small>
+                            <br />
+                            <small class="text-muted"><i class="bi bi-telephone"></i> @contact.PhoneNumber</small>
                         </div>
-                        <div class="col-md-5">
-                            <i class="bi bi-envelope"></i>
-                            <small class="text-muted">@contact.EmailAddress</small>
-                            <i class="bi bi-telephone"></i>
-                            <small class="text-muted">@contact.PhoneNumber</small>
-                        </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2 align-self-center">
                             <a class="btn btn-primary btn-sm" role="button" id="AddContact" title="Edit contact"
-                                asp-area="" asp-controller="Contacts" asp-action="Add" asp-route-partnerId="@Model.Id">
+                                asp-area="" asp-controller="Contacts" asp-action="Edit"
+                                asp-route-id="@contact.Id" asp-route-partnerId="@Model.Id">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
                         </div>

@@ -22,17 +22,23 @@
         [Display(Name = "Email address")]
         [StringLength(DataTypesConstants.EmailAddressMaxLenght)]
         [RegularExpression(DataTypesConstants.EmailAddressRegex)]
-        public string? EmailAddress { get; set; }
+        public string EmailAddress { get; set; } = null!;
+
+        public string? CurrentEmailAddress { get; set; }
 
         [Required]
         [Display(Name = "Phone number")]
         [StringLength(DataTypesConstants.PhoneNumberMaxLenght)]
         [RegularExpression(DataTypesConstants.PhoneNumberRegex)]
-        public string? PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; } = null!;
+
+        public string? CurrentPhoneNumber { get; set; }
 
         [Required]
         [Display(Name = "Create support system user?")]
         public bool IsUser { get; set; } = false;
+
+        public string? UserId { get; set; }
 
         public int? PartnerId { get; set; }
 

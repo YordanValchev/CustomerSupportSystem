@@ -4,6 +4,10 @@
     {
         public void Configure(EntityTypeBuilder<Partner> builder)
         {
+            builder
+                .Property(p => p.IsActive)
+                .HasDefaultValue(true);
+
             builder.HasOne(d => d.Country)
                 .WithMany(p => p.Partners)
                 .HasForeignKey(d => d.CountryId)

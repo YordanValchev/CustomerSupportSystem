@@ -27,6 +27,8 @@ builder.Services.AddScoped<IRepository, Repository>();
 builder.Services.AddScoped<IPartnerService, PartnerService>();
 builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddScoped<IJobTitleService, JobTitleService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IEmailAddressService, EmailAddressService>();
 
 
 var app = builder.Build();

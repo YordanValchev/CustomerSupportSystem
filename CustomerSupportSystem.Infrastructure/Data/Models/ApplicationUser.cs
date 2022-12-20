@@ -2,7 +2,7 @@
 {
     public class ApplicationUser : IdentityUser
     {
-        public bool IsActive { get; set; } = true;
+        public bool? IsActive { get; set; } = true;
 
         public virtual ICollection<TicketParticipant> TicketParticipants { get; set; } = new HashSet<TicketParticipant>();
 

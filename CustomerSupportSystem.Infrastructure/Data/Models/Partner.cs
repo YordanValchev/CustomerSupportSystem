@@ -42,6 +42,8 @@
 
         public bool? IsSubscriptionActive { get; set; }
 
+        public bool? IsActive { get; set; } = true;
+
         public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 
         public virtual ICollection<PartnerContact> PartnerContacts { get; set; } = new HashSet<PartnerContact>();

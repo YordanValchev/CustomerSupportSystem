@@ -106,7 +106,15 @@ namespace CustomerSupportSystem.Core.Services
             partner.SubscriptionContractNumber = model.SubscriptionContractNumber;
             partner.IsSubscriptionActive = model.IsSubscriptionActive;
 
-            await repo.SaveChangesAsync();
+            try
+            {
+                await repo.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(nameof(Edit), ex);
+                throw new ApplicationException("Database failed to edit info", ex);
+            }
         }
 
         public async Task CreatePartnerContact(int partnerId, int contactId)
@@ -162,9 +170,10 @@ namespace CustomerSupportSystem.Core.Services
                 .Where(partnerContact => partnerContact.PartnerId == id)
                 .Select(partnerContact => new PartnerDetailsContactsModel()
                 {
+                    Id = partnerContact.Contact.Id,
                     Name = $"{partnerContact.Contact.FirstName} {partnerContact.Contact.LastName}",
-                    PhoneNumber = partnerContact.Contact.PhoneNumbers.Any() ? partnerContact.Contact.PhoneNumbers.FirstOrDefault().Number : string.Empty,
-                    EmailAddress = partnerContact.Contact.Emails.Any() ? partnerContact.Contact.Emails.FirstOrDefault().EmailAddress : string.Empty,
+                    PhoneNumber = partnerContact.Contact.PhoneNumbers.First().Number,
+                    EmailAddress = partnerContact.Contact.Emails.First().EmailAddress,
                     JobTitle = partnerContact.Contact.JobTitle == null ? string.Empty : partnerContact.Contact.JobTitle.Title,
                     IsUser = partnerContact.Contact.User == null ? false : true
                 })
