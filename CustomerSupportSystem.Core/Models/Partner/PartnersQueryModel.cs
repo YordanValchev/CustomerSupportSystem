@@ -8,6 +8,8 @@
 
         public int ConsultantId { get; set; } = -1;
 
+        public int ActiveType { get; set; } = 1;
+
         public string? Filter { get; set; }
 
         public int CurrentPage { get; set; } = 1;

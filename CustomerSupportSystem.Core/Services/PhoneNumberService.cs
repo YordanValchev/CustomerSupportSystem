@@ -1,28 +1,30 @@
-﻿namespace CustomerSupportSystem.Core.Services
+﻿using System.Net.Mail;
+
+namespace CustomerSupportSystem.Core.Services
 {
-    public class EmailAddressService : IEmailAddressService
+    public class PhoneNumberService : IPhoneNumberService
     {
         private readonly IRepository repo;
 
         private readonly ILogger logger;
 
-        public EmailAddressService(
+        public PhoneNumberService(
             IRepository _repo,
-            ILogger<EmailAddressService> _logger
+            ILogger<PhoneNumberService> _logger
             )
         {
             repo = _repo;
             logger = _logger;
         }
 
-        public async Task<Email> AddEmail(string emailAddress, int? contactId, int? employeeId, bool? isMain)
+        public async Task<PhoneNumber> AddPhoneNumber(string phoneNumber, int? contactId, int? employeeId, bool? isMain)
         {
-            if (await repo.AllReadonly<Email>().AnyAsync(e =>
+            if (await repo.AllReadonly<PhoneNumber>().AnyAsync(e =>
                 e.ContactId != null &&
                 e.ContactId == contactId &&
                 e.IsMain != null &&
                 e.IsMain == true)
-                || await repo.AllReadonly<Email>().AnyAsync(e =>
+                || await repo.AllReadonly<PhoneNumber>().AnyAsync(e =>
                 e.EmployeeId != null &&
                 e.EmployeeId == employeeId &&
                 e.IsMain != null &&
@@ -32,9 +34,9 @@
                 isMain = false;
             }
 
-            var entity = new Email()
+            var entity = new PhoneNumber()
             {
-                EmailAddress = emailAddress,
+                Number = phoneNumber,
                 IsMain = isMain,
                 ContactId = contactId,
                 EmployeeId = employeeId
@@ -47,17 +49,17 @@
             }
             catch (Exception ex)
             {
-                logger.LogError(nameof(AddEmail), ex);
+                logger.LogError(nameof(AddPhoneNumber), ex);
                 throw new ApplicationException("Database failed to save info", ex);
             }
 
             return entity;
         }
 
-        public async Task DeleteEmailAddress(string emailAddress)
+        public async Task DeletePhoneNumber(string phoneNumber)
         {
-            var entity = await GetEmailByAddress(emailAddress);
-            entity.EmailAddress = null;
+            var entity = await GetPhoneByNumber(phoneNumber);
+            entity.Number = null;
             entity.IsMain = false;
 
             try
@@ -67,32 +69,32 @@
             }
             catch (Exception ex)
             {
-                logger.LogError(nameof(DeleteEmailAddress), ex);
+                logger.LogError(nameof(DeletePhoneNumber), ex);
                 throw new ApplicationException("Database failed to edit info", ex);
             }
         }
 
-        public async Task<bool> EmailExists(string emailAddress)
+        public async Task<PhoneNumber> GetPhoneByNumber(string phoneNumber)
         {
-            return await repo.AllReadonly<Email>()
-                .AnyAsync(e => e.EmailAddress == emailAddress);
-        }
-
-        public async Task<Email> GetEmailByAddress(string emailAddress)
-        {
-            return await repo.AllReadonly<Email>()
-                .Where(e => e.EmailAddress == emailAddress)
+            return await repo.AllReadonly<PhoneNumber>()
+                .Where(e => e.Number == phoneNumber)
                 .FirstAsync();
         }
 
-        public async Task UpdateEmailAddress(string emailAddress, string newEmailAddress)
+        public async Task<bool> PhoneNumberExists(string phoneNumber)
         {
-            if(!string.IsNullOrWhiteSpace(newEmailAddress))
-            {
-                var entity = await GetEmailByAddress(emailAddress);
-                entity.EmailAddress = newEmailAddress;
+            return await repo.AllReadonly<PhoneNumber>()
+                .AnyAsync(e => e.Number == phoneNumber);
+        }
 
-                if (string.IsNullOrWhiteSpace(entity.EmailAddress))
+        public async Task UpdatePhoneNumber(string phoneNumber, string newPhoneNumber)
+        {
+            if (!string.IsNullOrWhiteSpace(newPhoneNumber))
+            {
+                var entity = await GetPhoneByNumber(phoneNumber);
+                entity.Number = newPhoneNumber;
+
+                if(string.IsNullOrWhiteSpace(newPhoneNumber))
                 {
                     entity.IsMain = false;
                 }
@@ -104,7 +106,7 @@
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(nameof(UpdateEmailAddress), ex);
+                    logger.LogError(nameof(UpdatePhoneNumber), ex);
                     throw new ApplicationException("Database failed to edit info", ex);
                 }
             }

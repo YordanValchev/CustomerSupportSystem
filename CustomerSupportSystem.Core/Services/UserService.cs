@@ -20,10 +20,9 @@ namespace CustomerSupportSystem.Core.Services
 
             if (applicationUser != null)
             {
-                applicationUser.UserName = emailAddress;
-                applicationUser.NormalizedUserName = userManager.NormalizeEmail(emailAddress);
+                await userManager.SetUserNameAsync(applicationUser, emailAddress);
                 applicationUser.Email = emailAddress;
-                applicationUser.NormalizedEmail = userManager.NormalizeEmail(emailAddress);
+                await userManager.UpdateNormalizedEmailAsync(applicationUser);
 
                 var result = await userManager.UpdateAsync(applicationUser);
 
@@ -81,11 +80,12 @@ namespace CustomerSupportSystem.Core.Services
 
             if (applicationUser != null)
             {
+                await userManager.RemovePasswordAsync(applicationUser);
                 applicationUser.IsActive = false;
-                applicationUser.UserName = null;
-                applicationUser.NormalizedUserName = null;
+                applicationUser.UserName = applicationUser.Id;
+                await userManager.UpdateNormalizedUserNameAsync(applicationUser);
                 applicationUser.Email = null;
-                applicationUser.NormalizedEmail = null;
+                await userManager.UpdateNormalizedEmailAsync(applicationUser);
                 applicationUser.PhoneNumber = null;
 
                 var result = await userManager.UpdateAsync(applicationUser);

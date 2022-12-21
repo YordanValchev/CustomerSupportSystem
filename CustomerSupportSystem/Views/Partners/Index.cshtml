@@ -1,4 +1,5 @@
-﻿@model PartnersQueryModel
+﻿@using CustomerSupportSystem.Core.Models.Enums
+@model PartnersQueryModel
 
 @{
     ViewData["Title"] = "Partners";
@@ -18,7 +19,10 @@
                         }
                     </select>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-2">
+                    <select asp-for="ActiveType" asp-items="Html.GetEnumSelectList<ActiveTypeFilter>()" class="form-control"></select>
+                </div>
+                <div class="col-md-4">
                     <input asp-for="Filter" class="form-control" placeholder="Search">
                     <span asp-validation-for="Filter" class="small text-danger"></span>
                 </div>

@@ -1,0 +1,63 @@
+﻿@model ContactDetailsModel
+
+@{
+    ViewData["Title"] = "Contact details";
+    ViewData["ActivePage"] = NavPagesService.Contacts;
+}
+
+<h2 class="text-center mb-3">@ViewBag.Title</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <form method="get">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <partial name="_ContactDetailsPartial" model="@Model" />
+        </form>
+        <hr class="my-4" />
+        <div class="text-center">
+            <a class="w-100 btn btn-primary btn-lg" role="button" id="EditContact" asp-area="" asp-controller="Contacts" asp-action="Edit" asp-route-id="@Model.Id">
+                <i class="bi bi-pencil-square"></i>
+                Edit Contact
+            </a>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <h5 class="text-center mb-3">Partners</h5>
+        <div class="list-group">
+            @foreach (var partner in Model.Partners)
+            {
+                <a class="list-group-item list-group-item-action" role="button" id="PartnerDetails" title="Partner details"
+                    asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">
+                    @partner.Name
+                    <i class="bi bi-card-text"></i>
+                </a>
+            }
+        </div>
+        <br />
+        <h5 class="text-center mb-3">Include new partner</h5>
+        <form class="form-inline" method="post">
+            <div class="input-group">
+                <input type="hidden" asp-for="@Model.Id" />
+                <input type="hidden" asp-for="@Model.FirstName" />
+                <input type="hidden" asp-for="@Model.LastName" />
+                <input type="hidden" asp-for="@Model.JobTitle" />
+                <input type="hidden" asp-for="@Model.EmailAddress" />
+                <input type="hidden" asp-for="@Model.PhoneNumber" />
+                <input type="hidden" asp-for="@Model.IsUser" />
+                <select asp-for="PartnerId" class="form-control">
+                    <option value="">Select partner...</option>
+                    @foreach (var partner in Model.AllPartners)
+                    {
+                        <option value="@partner.Id">@partner.Name</option>
+                    }
+                </select>
+                <button type="submit" class="btn btn-primary">Add</button>
+            </div>
+            <span asp-validation-for="PartnerId" class="small text-danger"></span>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

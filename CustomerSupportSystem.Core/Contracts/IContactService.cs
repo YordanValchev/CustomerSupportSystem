@@ -1,5 +1,4 @@
-﻿using CustomerSupportSystem.Core.Models.Contact;
-using CustomerSupportSystem.Core.Models.Partner;
+﻿using CustomerSupportSystem.Core.Models.Partner;
 
 namespace CustomerSupportSystem.Core.Contracts
 {
@@ -13,8 +12,14 @@ namespace CustomerSupportSystem.Core.Contracts
 
         Task Edit(int contactId, ContactModel model);
 
+        Task Delete(int contactId, ContactDetailsModel model);
+
         Task<ContactDetailsModel> ContactDetails(int id);
 
-        Task<PhoneNumber> ContactDefaultPhoneNumber(int id);
+        Task<IEnumerable<ContactDetailsPartnerModel>> ContactDetailsPartners(int id);
+
+        Task<IEnumerable<ContactDetailsPartnerModel>> AllPartners(int id);
+
+        Task AddPartner(int contactId, int partnerId);
     }
 }

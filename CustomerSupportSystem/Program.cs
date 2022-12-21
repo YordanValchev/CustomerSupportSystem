@@ -29,6 +29,7 @@ builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddScoped<IJobTitleService, JobTitleService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailAddressService, EmailAddressService>();
+builder.Services.AddScoped<IPhoneNumberService, PhoneNumberService>();
 
 
 var app = builder.Build();

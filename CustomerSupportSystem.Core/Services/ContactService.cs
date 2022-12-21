@@ -12,16 +12,20 @@ namespace CustomerSupportSystem.Core.Services
 
         private readonly IEmailAddressService emailService;
 
+        private readonly IPhoneNumberService phoneNumberService;
+
         private readonly ILogger logger;
 
         public ContactService(
             IRepository _repo,
             IEmailAddressService _emailService,
+            IPhoneNumberService _phoneNumberService,
             ILogger<ContactService> _logger
             )
         {
             repo = _repo;
             emailService = _emailService;
+            phoneNumberService = _phoneNumberService;
             logger = _logger;
         }
 
@@ -45,23 +49,7 @@ namespace CustomerSupportSystem.Core.Services
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 JobTitleId = model.JobTitleId,
-                UserId = model.UserId,
-                Emails = new List<Email>()
-                {
-                    new Email()
-                    {
-                        EmailAddress = model.EmailAddress,
-                        IsMain = true
-                    }
-                },
-                PhoneNumbers = new List<PhoneNumber>()
-                {
-                    new PhoneNumber()
-                    {
-                        Number = model.PhoneNumber,
-                        IsMain = true
-                    }
-                }
+                UserId = model.UserId
             };
 
             try
@@ -73,6 +61,16 @@ namespace CustomerSupportSystem.Core.Services
             {
                 logger.LogError(nameof(Create), ex);
                 throw new ApplicationException("Database failed to save info", ex);
+            }
+
+            if(!string.IsNullOrWhiteSpace(model.EmailAddress))
+            {
+                await emailService.AddEmail(model.EmailAddress, contact.Id, null, true);
+            }
+
+            if(!string.IsNullOrWhiteSpace(model.PhoneNumber))
+            {
+                await phoneNumberService.AddPhoneNumber(model.PhoneNumber, contact.Id, null, true);
             }
 
             return contact.Id;
@@ -87,18 +85,34 @@ namespace CustomerSupportSystem.Core.Services
             contact.JobTitleId = model.JobTitleId;
             contact.UserId = model.UserId;
 
-            var emails = contact.Emails;
+            string currentEmailAddress = model.CurrentEmailAddress ?? string.Empty;
+            string newEmailAddress = model.EmailAddress ?? string.Empty;
 
-            if (model.CurrentEmailAddress != null && model.CurrentEmailAddress != model.EmailAddress)
+            if (currentEmailAddress != newEmailAddress)
             {
-                await emailService.UpdateEmailAddress(model.CurrentEmailAddress, model.EmailAddress);
+                if(string.IsNullOrWhiteSpace(currentEmailAddress) && !string.IsNullOrWhiteSpace(newEmailAddress))
+                {
+                    await emailService.AddEmail(newEmailAddress, model.Id, null, true);
+                }
+                else
+                {
+                    await emailService.UpdateEmailAddress(currentEmailAddress, newEmailAddress);
+                }
             }
 
-            var phoneNumber = await ContactDefaultPhoneNumber(contactId);
+            string currentPhoneNumber = model.CurrentPhoneNumber ?? string.Empty;
+            string newPhoneNumber = model.PhoneNumber ?? string.Empty;
 
-            if (phoneNumber != null)
+            if (currentPhoneNumber != newPhoneNumber)
             {
-                phoneNumber.Number = model.PhoneNumber;
+                if (string.IsNullOrWhiteSpace(currentPhoneNumber) && !string.IsNullOrWhiteSpace(newPhoneNumber))
+                {
+                    await phoneNumberService.AddPhoneNumber(newPhoneNumber, model.Id, null, true);
+                }
+                else
+                {
+                    await phoneNumberService.UpdatePhoneNumber(currentPhoneNumber, newPhoneNumber);
+                }
             }
 
             try
@@ -137,16 +151,84 @@ namespace CustomerSupportSystem.Core.Services
                 .FirstAsync();
         }
 
-        public async Task<PhoneNumber> ContactDefaultPhoneNumber(int id)
+        public async Task<IEnumerable<ContactDetailsPartnerModel>> ContactDetailsPartners(int id)
         {
-            return await repo.AllReadonly<PhoneNumber>()
-                .Where(e =>
-                        e.ContactId != null &&
-                        e.ContactId == id &&
-                        e.IsMain != null &&
-                        e.IsMain == true
-                        )
-                .FirstAsync();
+            return await repo.AllReadonly<PartnerContact>()
+                .Include(partnerContact => partnerContact.Partner)
+                .Where(partnerContact => partnerContact.ContactId == id && (partnerContact.Partner.IsActive ?? false) == true)
+                .Select(partnerContact => new ContactDetailsPartnerModel()
+                {
+                    Id = partnerContact.Partner.Id,
+                    Name = partnerContact.Partner.Name
+                })
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<ContactDetailsPartnerModel>> AllPartners(int id)
+        {
+            return await repo.AllReadonly<Partner>()
+                .Where(partner => partner.IsActive ?? false)
+                .Include(partner => partner.PartnerContacts)
+                .Where(partner => !partner.PartnerContacts.Any(partnerContact => partnerContact.ContactId == id))
+                .Select(partner => new ContactDetailsPartnerModel()
+                {
+                    Id = partner.Id,
+                    Name = partner.Name
+                })
+                .ToListAsync();
+        }
+
+        public async Task Delete(int contactId, ContactDetailsModel model)
+        {
+            var contact = await repo.GetByIdAsync<Contact>(contactId);
+
+            contact.FirstName = null;
+            contact.LastName = null;
+            contact.JobTitleId = null;
+            contact.IsActive = false;
+
+            if (!string.IsNullOrWhiteSpace(model.EmailAddress))
+            {
+                await emailService.DeleteEmailAddress(model.EmailAddress);
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.PhoneNumber))
+            {
+                await phoneNumberService.DeletePhoneNumber(model.PhoneNumber);
+            }
+
+            try
+            {
+                await repo.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(nameof(Edit), ex);
+                throw new ApplicationException("Database failed to edit info", ex);
+            }
+        }
+
+        public async Task AddPartner(int contactId, int partnerId)
+        {
+            if(partnerId > 0)
+            {
+                var partnerContact = new PartnerContact()
+                {
+                    ContactId = contactId,
+                    PartnerId = partnerId
+                };
+
+                try
+                {
+                    await repo.AddAsync(partnerContact);
+                    await repo.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(nameof(AddPartner), ex);
+                    throw new ApplicationException("Database failed to save info", ex);
+                }
+            }
         }
     }
 }

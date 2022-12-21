@@ -61,10 +61,17 @@
                     <label asp-for="@Model.IsSubscriptionActive" class="form-check-label"></label>
                 </div>
             </div>
+            <hr class="my-4" />
+            <div class="row row-cols-1">
+                <div class="col">
+                    <input asp-for="@Model.IsActive" class="form-check-input" type="checkbox" disabled>
+                    <label asp-for="@Model.IsActive" class="form-check-label"></label>
+                </div>
+            </div>
         </form>
         <hr class="my-4" />
         <div class="text-center">
-            <a class="btn btn-primary" role="button" id="EditPartner" asp-area="" asp-controller="Partners" asp-action="Edit" asp-route-id="@Model.Id">
+            <a class="w-100 btn btn-primary btn-lg" role="button" id="EditPartner" asp-area="" asp-controller="Partners" asp-action="Edit" asp-route-id="@Model.Id">
                 <i class="bi bi-pencil-square"></i>
                 Edit partner
             </a>
@@ -86,11 +93,18 @@
                             <small class="text-muted"><i class="bi bi-telephone"></i> @contact.PhoneNumber</small>
                         </div>
                         <div class="col-md-2 align-self-center">
-                            <a class="btn btn-primary btn-sm" role="button" id="AddContact" title="Edit contact"
-                                asp-area="" asp-controller="Contacts" asp-action="Edit"
-                                asp-route-id="@contact.Id" asp-route-partnerId="@Model.Id">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
+                            <div class="btn-group-vertical">
+                                <a class="btn btn-primary btn-sm" role="button" id="AddContact" title="Edit contact"
+                                    asp-area="" asp-controller="Contacts" asp-action="Edit"
+                                    asp-route-id="@contact.Id" asp-route-partnerId="@Model.Id">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a class="btn btn-primary btn-sm" role="button" id="DeleteContact" title="Delete contact"
+                                    asp-area="" asp-controller="Contacts" asp-action="Delete"
+                                    asp-route-id="@contact.Id" asp-route-partnerId="@Model.Id">
+                                    <i class="bi bi-trash3"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </li>

@@ -25,6 +25,7 @@ namespace CustomerSupportSystem.Controllers
             var result = await partnerService.QueryPartners(
                 query.SortOrder,
                 query.ConsultantId,
+                query.ActiveType,
                 query.Filter,
                 query.CurrentPage,
                 PartnersQueryModel.RowsPerPage
@@ -47,9 +48,8 @@ namespace CustomerSupportSystem.Controllers
             }
 
             var model = await partnerService.PartnerDetails(id);
-            var contacts = await partnerService.PartnerDetailsContacts(id);
-
-            model.Contacts = contacts;
+            
+            model.Contacts = await partnerService.PartnerDetailsContacts(id);
 
             return View(model);
         }
@@ -116,6 +116,7 @@ namespace CustomerSupportSystem.Controllers
                 ConsultantId = partnerDetails.ConsultantId ?? -1,
                 SubscriptionContractNumber = partnerDetails.SubscriptionContractNumber,
                 IsSubscriptionActive = partnerDetails.IsSubscriptionActive,
+                IsActive = partnerDetails.IsActive,
                 Countries = await partnerService.AllCountries(),
                 Consultants = await partnerService.AllConsultants()
             };

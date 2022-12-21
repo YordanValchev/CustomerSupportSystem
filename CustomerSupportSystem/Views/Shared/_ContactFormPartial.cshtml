@@ -5,6 +5,7 @@
         <form method="post">
             <div class="row g-3">
                 <input type="hidden" asp-for="@Model.Id" />
+                <input type="hidden" asp-for="@Model.PartnerId" />
                 <div class="col-md-6">
                     <label asp-for="FirstName" class="form-label"></label>
                     <input asp-for="FirstName" class="form-control">

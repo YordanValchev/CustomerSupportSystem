@@ -76,6 +76,17 @@
                     <span asp-validation-for="IsSubscriptionActive" class="small text-danger"></span>
                 </div>
             </div>
+            @if (ViewContext.RouteData.Values["action"]?.ToString() == "Edit")
+            {
+                <hr class="my-4" />
+                <div class="row row-cols-1">
+                    <div class="col">
+                        <input asp-for="IsActive" class="form-check-input" type="checkbox" value="true" checked="@Model.IsActive">
+                        <label asp-for="IsActive" class="form-check-label"></label>
+                        <span asp-validation-for="IsActive" class="small text-danger"></span>
+                    </div>
+                </div>
+            }
             <hr class="my-4" />
             <div class="text-center">
                 <input class="w-100 btn btn-primary btn-lg" type="submit" value="Save" />

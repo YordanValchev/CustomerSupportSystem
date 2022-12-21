@@ -105,6 +105,7 @@ namespace CustomerSupportSystem.Core.Services
             partner.ConsultantId = model.ConsultantId;
             partner.SubscriptionContractNumber = model.SubscriptionContractNumber;
             partner.IsSubscriptionActive = model.IsSubscriptionActive;
+            partner.IsActive = model.IsActive;
 
             try
             {
@@ -158,7 +159,8 @@ namespace CustomerSupportSystem.Core.Services
                     ConsultantId = partner.ConsultantId,
                     Consultant = partner.Consultant == null ? string.Empty : $"{partner.Consultant.FirstName} {partner.Consultant.LastName}",
                     SubscriptionContractNumber = partner.SubscriptionContractNumber,
-                    IsSubscriptionActive = partner.IsSubscriptionActive ?? false
+                    IsSubscriptionActive = partner.IsSubscriptionActive ?? false,
+                    IsActive = partner.IsActive ?? false,
                 })
                 .FirstAsync();
         }
@@ -167,13 +169,13 @@ namespace CustomerSupportSystem.Core.Services
         {
             return await repo.AllReadonly<PartnerContact>()
                 .Include(partnerContact => partnerContact.Contact)
-                .Where(partnerContact => partnerContact.PartnerId == id)
+                .Where(partnerContact => partnerContact.PartnerId == id && (partnerContact.Contact.IsActive ?? false) == true)
                 .Select(partnerContact => new PartnerDetailsContactsModel()
                 {
                     Id = partnerContact.Contact.Id,
                     Name = $"{partnerContact.Contact.FirstName} {partnerContact.Contact.LastName}",
-                    PhoneNumber = partnerContact.Contact.PhoneNumbers.First().Number,
-                    EmailAddress = partnerContact.Contact.Emails.First().EmailAddress,
+                    PhoneNumber = partnerContact.Contact.PhoneNumbers.First(e => e.IsMain ?? false).Number,
+                    EmailAddress = partnerContact.Contact.Emails.First(e => e.IsMain ?? false).EmailAddress,
                     JobTitle = partnerContact.Contact.JobTitle == null ? string.Empty : partnerContact.Contact.JobTitle.Title,
                     IsUser = partnerContact.Contact.User == null ? false : true
                 })
@@ -186,11 +188,23 @@ namespace CustomerSupportSystem.Core.Services
                 .AnyAsync(e => e.Id == id);
         }
 
-        public async Task<PartnersQueryModel> QueryPartners(string? sortOrder = null, int consultantId = -1, string? filter = null, int currentPage = 1, int rowsPerPage = 20)
+        public async Task<PartnersQueryModel> QueryPartners(string? sortOrder = null, int consultantId = -1, int activeType = 1, string? filter = null, int currentPage = 1, int rowsPerPage = 20)
         {
             var model = new PartnersQueryModel();
 
             var partners = repo.AllReadonly<Partner>();
+
+            if (Enum.GetName(typeof(ActiveTypeFilter), activeType) == "Active")
+            {
+                partners = partners
+                    .Where(partner => partner.IsActive == true);
+            }
+
+            if (Enum.GetName(typeof(ActiveTypeFilter), activeType) == "Inactive")
+            {
+                partners = partners
+                    .Where(partner => partner.IsActive == false);
+            }
 
             if (await ConsultantExists(consultantId))
             {

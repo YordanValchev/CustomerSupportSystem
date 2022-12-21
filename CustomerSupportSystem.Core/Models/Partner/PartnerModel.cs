@@ -47,6 +47,9 @@
         [Display(Name = "Is client's sunscription active?")]
         public bool IsSubscriptionActive { get; set; } = false;
 
+        [Display(Name = "Is partner active?")]
+        public bool IsActive { get; set; } = true;
+
         public IEnumerable<PartnerCountriesModel> Countries { get; set; } = new List<PartnerCountriesModel>();
 
         public IEnumerable<PartnerConsultantsModel> Consultants { get; set; } = new List<PartnerConsultantsModel>();

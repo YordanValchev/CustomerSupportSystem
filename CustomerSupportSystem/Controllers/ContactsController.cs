@@ -1,7 +1,4 @@
-﻿using CustomerSupportSystem.Core.Models.Partner;
-using CustomerSupportSystem.Infrastructure.Data.Models;
-using Microsoft.AspNetCore.Identity;
-using System.Net.Mail;
+﻿using CustomerSupportSystem.Infrastructure.Data.Models;
 
 namespace CustomerSupportSystem.Controllers
 {
@@ -16,6 +13,10 @@ namespace CustomerSupportSystem.Controllers
 
         private readonly IUserService userService;
 
+        private readonly IEmailAddressService emailAddressService;
+
+        private readonly IPhoneNumberService phoneNumberService;
+
         private readonly ILogger logger;
 
         public ContactsController(
@@ -23,12 +24,16 @@ namespace CustomerSupportSystem.Controllers
             IPartnerService _partnerService,
             IJobTitleService _JobTitleService,
             IUserService _userService,
+            IEmailAddressService _emailAddressService,
+            IPhoneNumberService _phoneNumberService,
             ILogger<ContactsController> _logger)
         {
             contactService = _contactService;
             partnerService = _partnerService;
             jobTitleService = _JobTitleService;
             userService = _userService;
+            emailAddressService = _emailAddressService;
+            phoneNumberService = _phoneNumberService;
             logger = _logger;
         }
 
@@ -37,17 +42,6 @@ namespace CustomerSupportSystem.Controllers
         {
             return View();
         }
-
-        //[HttpGet]
-        //public async Task<IActionResult> Add()
-        //{
-        //    var model = new ContactModel()
-        //    {
-        //        JobTitles = await jobTitleService.All()
-        //    };
-
-        //    return View(model);
-        //}
 
         [HttpGet]
         public async Task<IActionResult> Add(int? partnerId)
@@ -64,16 +58,19 @@ namespace CustomerSupportSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(ContactModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                model.JobTitles = await jobTitleService.All();
-
-                return View(model);
-            }
-
             if ((await jobTitleService.Exists(model.JobTitleId ?? -1)) == false)
             {
                 ModelState.AddModelError(nameof(model.JobTitleId), "The job title does not exists");
+            }
+
+            if (await emailAddressService.EmailExists(model.EmailAddress))
+            {
+                ModelState.AddModelError(nameof(model.EmailAddress), "The email address already exists");
+            }
+
+            if (await phoneNumberService.PhoneNumberExists(model.PhoneNumber))
+            {
+                ModelState.AddModelError(nameof(model.PhoneNumber), "The phone number already exists");
             }
 
             if (model.IsUser && !string.IsNullOrWhiteSpace(model.EmailAddress) && !string.IsNullOrWhiteSpace(model.PhoneNumber))
@@ -86,6 +83,13 @@ namespace CustomerSupportSystem.Controllers
                 {
                     ModelState.AddModelError(nameof(model.IsUser), "New user error");
                 }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.JobTitles = await jobTitleService.All();
+
+                return View(model);
             }
 
             int id = await contactService.Create(model);
@@ -103,9 +107,60 @@ namespace CustomerSupportSystem.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            return View();
+            if ((await contactService.Exists(id)) == false)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var contactDetails = await contactService.ContactDetails(id);
+            
+            var model = new ContactDetailsModel()
+            {
+                Id = contactDetails.Id,
+                FirstName = contactDetails.FirstName ?? string.Empty,
+                LastName = contactDetails.LastName ?? string.Empty,
+                JobTitleId = contactDetails.JobTitleId,
+                EmailAddress = contactDetails.EmailAddress ?? string.Empty,
+                PhoneNumber = contactDetails.PhoneNumber ?? string.Empty,
+                IsUser = contactDetails.UserId != null,
+                UserId = contactDetails.UserId
+            };
+
+            model.Partners = await contactService.ContactDetailsPartners(id);
+            model.AllPartners = await contactService.AllPartners(id);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Details(ContactDetailsModel model)
+        {
+            if ((await contactService.Exists(model.Id)) == false)
+            {
+                model.Partners = await contactService.ContactDetailsPartners(model.Id);
+                model.AllPartners = await contactService.AllPartners(model.Id);
+
+                ModelState.AddModelError(nameof(model.PartnerId), "Error loading contact");
+                return View(model);
+            }
+
+            if (model.PartnerId == null || !await partnerService.PartnerExists(model.PartnerId ?? -1))
+            {
+                model.Partners = await contactService.ContactDetailsPartners(model.Id);
+                model.AllPartners = await contactService.AllPartners(model.Id);
+
+                ModelState.AddModelError(nameof(model.PartnerId), "Invalid partner!");
+                return View(model);
+            }
+            
+            await contactService.AddPartner(model.Id, model.PartnerId ?? -1);
+
+            model.Partners = await contactService.ContactDetailsPartners(model.Id);
+            model.AllPartners = await contactService.AllPartners(model.Id);
+
+            return View(model);
         }
 
         [HttpGet]
@@ -140,19 +195,22 @@ namespace CustomerSupportSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(ContactModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                model.JobTitles = await jobTitleService.All();
-
-                return View(model);
-            }
-
             if ((await jobTitleService.Exists(model.JobTitleId ?? -1)) == false)
             {
                 ModelState.AddModelError(nameof(model.JobTitleId), "The job title does not exists");
             }
 
-            if(string.IsNullOrWhiteSpace(model.EmailAddress) && !string.IsNullOrWhiteSpace(model.UserId) && model.IsUser)
+            if (!string.IsNullOrWhiteSpace(model.EmailAddress) && model.EmailAddress != model.CurrentEmailAddress && (await emailAddressService.EmailExists(model.EmailAddress)))
+            {
+                ModelState.AddModelError(nameof(model.EmailAddress), "The email address already exists");
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.PhoneNumber) && model.PhoneNumber != model.CurrentPhoneNumber && (await phoneNumberService.PhoneNumberExists(model.PhoneNumber)))
+            {
+                ModelState.AddModelError(nameof(model.PhoneNumber), "The phone number already exists");
+            }
+
+            if (string.IsNullOrWhiteSpace(model.EmailAddress) && !string.IsNullOrWhiteSpace(model.UserId) && model.IsUser)
             {
                 ModelState.AddModelError(nameof(model.EmailAddress), "The contact has active user! The email address can not be empty!");
             }
@@ -207,6 +265,13 @@ namespace CustomerSupportSystem.Controllers
                 model.UserId = null;
             }
 
+            if (!ModelState.IsValid)
+            {
+                model.JobTitles = await jobTitleService.All();
+
+                return View(model);
+            }
+
             await contactService.Edit(model.Id, model);
 
             int partnerId = model.PartnerId ?? -1;
@@ -217,6 +282,70 @@ namespace CustomerSupportSystem.Controllers
             }
 
             return RedirectToAction(nameof(Details), new { id = model.Id });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id, int? partnerId)
+        {
+            if ((await contactService.Exists(id)) == false)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var contactDetails = await contactService.ContactDetails(id);
+
+            var model = new ContactDetailsModel()
+            {
+                Id = contactDetails.Id,
+                FirstName = contactDetails.FirstName ?? string.Empty,
+                LastName = contactDetails.LastName ?? string.Empty,
+                JobTitleId = contactDetails.JobTitleId,
+                EmailAddress = contactDetails.EmailAddress ?? string.Empty,
+                PhoneNumber = contactDetails.PhoneNumber ?? string.Empty,
+                IsUser = contactDetails.UserId != null,
+                UserId = contactDetails.UserId,
+                PartnerId = partnerId
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(ContactDetailsModel model)
+        {
+            if (!model.ConfirmDelete)
+            {
+                ModelState.AddModelError(nameof(model.ConfirmDelete), "Please, confirm the task!");
+                return View(model);
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.UserId))
+            {
+                try
+                {
+                    await userService.DeactivateUser(model.UserId);
+                }
+                catch
+                {
+                    ModelState.AddModelError(string.Empty, "Delete user error");
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            await contactService.Delete(model.Id, model);
+
+            int partnerId = model.PartnerId ?? -1;
+
+            if (partnerId > 0)
+            {
+                return RedirectToAction("Details", "Partners", new { id = partnerId });
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

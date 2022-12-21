@@ -22,7 +22,7 @@ namespace CustomerSupportSystem.Core.Contracts
 
         Task<IEnumerable<PartnerDetailsContactsModel>> PartnerDetailsContacts(int id);
 
-        Task<PartnersQueryModel> QueryPartners(string? sortOrder, int consultantId, string? filter, int currentPage, int rowsPerPage);
+        Task<PartnersQueryModel> QueryPartners(string? sortOrder, int consultantId, int activeType, string? filter, int currentPage, int rowsPerPage);
 
         Task CreatePartnerContact(int partnerId, int contactId);
     }

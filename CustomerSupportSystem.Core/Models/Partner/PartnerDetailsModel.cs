@@ -35,6 +35,9 @@
         [Display(Name = "Is client's sunscription active?")]
         public bool IsSubscriptionActive { get; set; }
 
+        [Display(Name = "Is partner active?")]
+        public bool IsActive { get; set; }
+
         public IEnumerable<PartnerDetailsContactsModel> Contacts { get; set; } = new List<PartnerDetailsContactsModel>();
     }
 }

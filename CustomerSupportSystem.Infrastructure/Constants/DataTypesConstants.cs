@@ -53,10 +53,11 @@
         //Email
         public const int EmailAddressMaxLenght = 260;
         public const string EmailAddressRegex = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";
+        public const string EmailAddressRegexErrorMsg = "Invalid email address!";
 
         //PhoneNumber
         public const int PhoneNumberMaxLenght = 20;
         public const string PhoneNumberRegex = @"^(\+\d{1,3}\s?)?((\(\d{3}\)\s?)|(\d{3})(\s|-?))(\d{3}(\s|-?))(\d{4})(\s?(([E|e]xt[:|.|]?)|x|X)(\s?\d+))?$";
-
+        public const string PhoneNumberRegexErrorMsg = "Invalid phone number!";
     }
 }
