@@ -16,6 +16,7 @@ namespace CustomerSupportSystem.Extensions
             services.AddScoped<ITicketPriorityService, TicketPriorityService>();
             services.AddScoped<ITicketTypeService, TicketTypeService>();
             services.AddScoped<ITicketStatusService, TicketStatusService>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
 
             return services;
         }

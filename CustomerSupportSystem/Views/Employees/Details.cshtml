@@ -1,0 +1,97 @@
+﻿@model EmployeeDetailsModel
+
+@{
+    ViewData["Title"] = "Employee details";
+    ViewData["ActivePage"] = NavPagesService.Employees;
+    int partnersCount = Model.Partners.Count();
+}
+
+<h2 class="text-center mb-3">@ViewBag.Title</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <form method="get">
+            <partial name="_EmployeeDetailsPartial" model="@Model" />
+        </form>
+        @if (User.IsInRole("Administrator"))
+        {
+            <hr class="my-4" />
+            <div class="row text-center">
+                <div class="col">
+                    <a class="w-100 btn btn-primary btn-lg" role="button" id="EditEmployee" asp-area="" asp-controller="Employees" asp-action="Edit" asp-route-id="@Model.Id">
+                        <i class="bi bi-pencil-square"></i>
+                        Edit employee
+                    </a>
+                </div>
+                <div class="col">
+                    <a class="w-100 btn btn-primary btn-lg" role="button" id="EditEmployee" asp-area="" asp-controller="Employees" asp-action="Delete" asp-route-id="@Model.Id">
+                        <i class="bi bi-trash3"></i>
+                        Delete employee
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-md-4">
+        <h5 class="text-center mb-3">Partners</h5>
+        <div class="list-group">
+            @foreach (var partner in Model.Partners)
+            {
+                <form class="form-inline" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="input-group">
+                        <input type="hidden" asp-for="@Model.Id" />
+                        <input type="hidden" asp-for="@Model.FirstName" />
+                        <input type="hidden" asp-for="@Model.LastName" />
+                        <input type="hidden" asp-for="@Model.JobTitle" />
+                        <input type="hidden" asp-for="@Model.EmailAddress" />
+                        <input type="hidden" asp-for="@Model.PhoneNumber" />
+                        <input type="hidden" asp-for="@Model.PartnerId" value="@partner.Id" />
+                        <input type="hidden" asp-for="@Model.FormName" value="RemovePartner" />
+                        <input class="form-control" value="@partner.Name" readonly>
+                        <a class="btn btn-primary" id="PartnerDetails" title="Partner details" asp-area="" asp-controller="Partners" asp-action="Details" asp-route-id="@partner.Id">
+                            <i class="bi bi-card-text"></i>
+                        </a>
+                        @if (User.IsInRole("Administrator"))
+                        {
+                            <button type="submit" class="btn btn-primary" title="Remove partner from employee">
+                                <i class="bi bi-building-dash"></i>
+                            </button>
+                        }
+                    </div>
+                    <span asp-validation-for="PartnerId" class="small text-danger"></span>
+                </form>
+            }
+        </div>
+        @if (User.IsInRole("Administrator"))
+        {
+            <br />
+            <h5 class="text-center mb-3">Include new partner</h5>
+            <form class="form-inline" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="input-group">
+                    <input type="hidden" asp-for="@Model.Id" />
+                    <input type="hidden" asp-for="@Model.FirstName" />
+                    <input type="hidden" asp-for="@Model.LastName" />
+                    <input type="hidden" asp-for="@Model.JobTitle" />
+                    <input type="hidden" asp-for="@Model.EmailAddress" />
+                    <input type="hidden" asp-for="@Model.PhoneNumber" />
+                    <input type="hidden" asp-for="@Model.FormName" value="AddPartner"/>
+                    <select asp-for="PartnerId" class="form-control">
+                        <option value="">Select partner...</option>
+                        @foreach (var partner in Model.AllPartners)
+                        {
+                            <option value="@partner.Id">@partner.Name</option>
+                        }
+                    </select>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+                <span asp-validation-for="PartnerId" class="small text-danger"></span>
+            </form>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -132,6 +132,27 @@ namespace CustomerSupportSystem.Core.Services
                     FirstName = contact.FirstName,
                     LastName = contact.LastName,
                     JobTitleId = contact.JobTitleId,
+                    JobTitle = contact.JobTitle == null ? string.Empty : contact.JobTitle.Title,
+                    UserId = contact.UserId,
+                    EmailAddress = contact.Emails.First(e => e.IsMain ?? false).EmailAddress,
+                    PhoneNumber = contact.PhoneNumbers.First(p => p.IsMain ?? false).Number
+                })
+                .FirstAsync();
+        }
+
+        public async Task<ContactDetailsModel> ContactDetailsByUserId(string id)
+        {
+            return await repo.AllReadonly<Contact>()
+                .Include(contact => contact.Emails)
+                .Include(contact => contact.PhoneNumbers)
+                .Where(contact => contact.UserId != null && contact.UserId == id)
+                .Select(contact => new ContactDetailsModel()
+                {
+                    Id = contact.Id,
+                    FirstName = contact.FirstName,
+                    LastName = contact.LastName,
+                    JobTitleId = contact.JobTitleId,
+                    JobTitle = contact.JobTitle == null ? string.Empty : contact.JobTitle.Title,
                     UserId = contact.UserId,
                     EmailAddress = contact.Emails.First(e => e.IsMain ?? false).EmailAddress,
                     PhoneNumber = contact.PhoneNumbers.First(p => p.IsMain ?? false).Number
@@ -164,7 +185,7 @@ namespace CustomerSupportSystem.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<ContactDetailsPartnerModel>> AllPartnersByContactId(int id)
+        public async Task<IEnumerable<ContactDetailsPartnerModel>> AllPartnersNotEqualToContactId(int id)
         {
             return await repo.AllReadonly<Partner>()
                 .Where(partner => partner.IsActive ?? false)

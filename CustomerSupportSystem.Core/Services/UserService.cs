@@ -1,17 +1,22 @@
-﻿using CustomerSupportSystem.Core.Contracts;
-using CustomerSupportSystem.Infrastructure.Data.Models;
-using Microsoft.AspNetCore.Identity;
-using System.Net.Mail;
+﻿using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace CustomerSupportSystem.Core.Services
 {
     public class UserService : IUserService
     {
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly IContactService contactService;
+        private readonly IEmployeeService employeeService;
 
-        public UserService(UserManager<ApplicationUser> _userManager)
+        public UserService(
+            UserManager<ApplicationUser> _userManager, 
+            IContactService _contactService,
+            IEmployeeService _employeeService)
         {
             userManager = _userManager;
+            contactService = _contactService;
+            employeeService = _employeeService;
         }
 
         public async Task ChangeUserEmail(string id, string emailAddress)
@@ -102,6 +107,19 @@ namespace CustomerSupportSystem.Core.Services
             return await userManager.FindByIdAsync(id);
         }
 
-        
+        public async Task<string> UserName(ClaimsPrincipal user)
+        {
+            string userId = userManager.GetUserId(user);
+            var applicationUser = await GetUserByID(userId);
+
+            if (await userManager.IsInRoleAsync(applicationUser, "Client"))
+            {
+                var contact = await contactService.ContactDetailsByUserId(userId);
+                return $"{contact.FirstName} {contact.LastName}";
+            }
+
+            var employee = await employeeService.EmployeeDetailsByUserId(userId);
+            return $"{employee.FirstName} {employee.LastName}";
+        }
     }
 }

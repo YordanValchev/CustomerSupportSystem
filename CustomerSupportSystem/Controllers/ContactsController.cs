@@ -1,7 +1,4 @@
-﻿using CustomerSupportSystem.Core.Models.Partner;
-using CustomerSupportSystem.Infrastructure.Data.Models;
-
-namespace CustomerSupportSystem.Controllers
+﻿namespace CustomerSupportSystem.Controllers
 {
     [Authorize(Roles = "Administrator,Support")]
     public class ContactsController : Controller
@@ -72,19 +69,32 @@ namespace CustomerSupportSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(ContactModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                model.JobTitles = await jobTitleService.All();
+
+                return View(model);
+            }
+
             if ((await jobTitleService.Exists(model.JobTitleId ?? -1)) == false)
             {
                 ModelState.AddModelError(nameof(model.JobTitleId), "The job title does not exists");
+                model.JobTitles = await jobTitleService.All();
+                return View(model);
             }
 
             if (await emailAddressService.EmailExists(model.EmailAddress))
             {
                 ModelState.AddModelError(nameof(model.EmailAddress), "The email address already exists");
+                model.JobTitles = await jobTitleService.All();
+                return View(model);
             }
 
             if (await phoneNumberService.PhoneNumberExists(model.PhoneNumber))
             {
                 ModelState.AddModelError(nameof(model.PhoneNumber), "The phone number already exists");
+                model.JobTitles = await jobTitleService.All();
+                return View(model);
             }
 
             if (model.IsUser && !string.IsNullOrWhiteSpace(model.EmailAddress) && !string.IsNullOrWhiteSpace(model.PhoneNumber))
@@ -96,14 +106,9 @@ namespace CustomerSupportSystem.Controllers
                 catch
                 {
                     ModelState.AddModelError(nameof(model.IsUser), "New user error");
+                    model.JobTitles = await jobTitleService.All();
+                    return View(model);
                 }
-            }
-
-            if (!ModelState.IsValid)
-            {
-                model.JobTitles = await jobTitleService.All();
-
-                return View(model);
             }
 
             int id = await contactService.Create(model);
@@ -136,6 +141,7 @@ namespace CustomerSupportSystem.Controllers
                 FirstName = contactDetails.FirstName ?? string.Empty,
                 LastName = contactDetails.LastName ?? string.Empty,
                 JobTitleId = contactDetails.JobTitleId,
+                JobTitle = contactDetails.JobTitle,
                 EmailAddress = contactDetails.EmailAddress ?? string.Empty,
                 PhoneNumber = contactDetails.PhoneNumber ?? string.Empty,
                 IsUser = contactDetails.UserId != null,
@@ -143,7 +149,7 @@ namespace CustomerSupportSystem.Controllers
             };
 
             model.Partners = await contactService.ContactDetailsPartners(id);
-            model.AllPartners = await contactService.AllPartnersByContactId(id);
+            model.AllPartners = await contactService.AllPartnersNotEqualToContactId(id);
 
             return View(model);
         }
@@ -153,17 +159,13 @@ namespace CustomerSupportSystem.Controllers
         {
             if ((await contactService.Exists(model.Id)) == false)
             {
-                model.Partners = await contactService.ContactDetailsPartners(model.Id);
-                model.AllPartners = await contactService.AllPartnersByContactId(model.Id);
-
-                ModelState.AddModelError(nameof(model.PartnerId), "Error loading contact");
-                return View(model);
+                return RedirectToAction(nameof(Index));
             }
 
             if (model.PartnerId == null || !await partnerService.PartnerExists(model.PartnerId ?? -1))
             {
                 model.Partners = await contactService.ContactDetailsPartners(model.Id);
-                model.AllPartners = await contactService.AllPartnersByContactId(model.Id);
+                model.AllPartners = await contactService.AllPartnersNotEqualToContactId(model.Id);
 
                 ModelState.AddModelError(nameof(model.PartnerId), "Invalid partner!");
                 return View(model);
@@ -180,7 +182,7 @@ namespace CustomerSupportSystem.Controllers
 
             model.PartnerId = null;
             model.Partners = await contactService.ContactDetailsPartners(model.Id);
-            model.AllPartners = await contactService.AllPartnersByContactId(model.Id);
+            model.AllPartners = await contactService.AllPartnersNotEqualToContactId(model.Id);
 
             return View(model);
         }
@@ -217,24 +219,39 @@ namespace CustomerSupportSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(ContactModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                model.JobTitles = await jobTitleService.All();
+
+                return View(model);
+            }
+
             if ((await jobTitleService.Exists(model.JobTitleId ?? -1)) == false)
             {
                 ModelState.AddModelError(nameof(model.JobTitleId), "The job title does not exists");
+                model.JobTitles = await jobTitleService.All();
+                return View(model);
             }
 
             if (!string.IsNullOrWhiteSpace(model.EmailAddress) && model.EmailAddress != model.CurrentEmailAddress && (await emailAddressService.EmailExists(model.EmailAddress)))
             {
                 ModelState.AddModelError(nameof(model.EmailAddress), "The email address already exists");
+                model.JobTitles = await jobTitleService.All();
+                return View(model);
             }
 
             if (!string.IsNullOrWhiteSpace(model.PhoneNumber) && model.PhoneNumber != model.CurrentPhoneNumber && (await phoneNumberService.PhoneNumberExists(model.PhoneNumber)))
             {
                 ModelState.AddModelError(nameof(model.PhoneNumber), "The phone number already exists");
+                model.JobTitles = await jobTitleService.All();
+                return View(model);
             }
 
             if (string.IsNullOrWhiteSpace(model.EmailAddress) && !string.IsNullOrWhiteSpace(model.UserId) && model.IsUser)
             {
                 ModelState.AddModelError(nameof(model.EmailAddress), "The contact has active user! The email address can not be empty!");
+                model.JobTitles = await jobTitleService.All();
+                return View(model);
             }
 
             if (!string.IsNullOrWhiteSpace(model.EmailAddress) && !string.IsNullOrWhiteSpace(model.UserId) && model.IsUser && model.EmailAddress != model.CurrentEmailAddress)
@@ -246,6 +263,8 @@ namespace CustomerSupportSystem.Controllers
                 catch
                 {
                     ModelState.AddModelError(nameof(model.IsUser), "Change user email error");
+                    model.JobTitles = await jobTitleService.All();
+                    return View(model);
                 }
             }
 
@@ -258,6 +277,8 @@ namespace CustomerSupportSystem.Controllers
                 catch
                 {
                     ModelState.AddModelError(nameof(model.IsUser), "Change user phone number error");
+                    model.JobTitles = await jobTitleService.All();
+                    return View(model);
                 }
             }
 
@@ -270,6 +291,8 @@ namespace CustomerSupportSystem.Controllers
                 catch
                 {
                     ModelState.AddModelError(nameof(model.IsUser), "New user error");
+                    model.JobTitles = await jobTitleService.All();
+                    return View(model);
                 }
             }
 
@@ -282,16 +305,11 @@ namespace CustomerSupportSystem.Controllers
                 catch
                 {
                     ModelState.AddModelError(nameof(model.IsUser), "Deactivate user error");
+                    model.JobTitles = await jobTitleService.All();
+                    return View(model);
                 }
 
                 model.UserId = null;
-            }
-
-            if (!ModelState.IsValid)
-            {
-                model.JobTitles = await jobTitleService.All();
-
-                return View(model);
             }
 
             await contactService.Edit(model.Id, model);
@@ -322,6 +340,7 @@ namespace CustomerSupportSystem.Controllers
                 FirstName = contactDetails.FirstName ?? string.Empty,
                 LastName = contactDetails.LastName ?? string.Empty,
                 JobTitleId = contactDetails.JobTitleId,
+                JobTitle = contactDetails.JobTitle,
                 EmailAddress = contactDetails.EmailAddress ?? string.Empty,
                 PhoneNumber = contactDetails.PhoneNumber ?? string.Empty,
                 IsUser = contactDetails.UserId != null,
@@ -335,6 +354,11 @@ namespace CustomerSupportSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(ContactDetailsModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            
             if (!model.ConfirmDelete)
             {
                 ModelState.AddModelError(nameof(model.ConfirmDelete), "Please, confirm the task!");
@@ -350,12 +374,8 @@ namespace CustomerSupportSystem.Controllers
                 catch
                 {
                     ModelState.AddModelError(string.Empty, "Delete user error");
+                    return View(model);
                 }
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return View(model);
             }
 
             await contactService.Delete(model.Id, model);

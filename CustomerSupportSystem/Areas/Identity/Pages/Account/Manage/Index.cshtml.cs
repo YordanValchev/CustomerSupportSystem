@@ -6,6 +6,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using CustomerSupportSystem.Core.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -16,13 +17,16 @@ namespace CustomerSupportSystem.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IPhoneNumberService _phoneNumberService;
 
         public IndexModel(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager,
+            IPhoneNumberService phoneNumberService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _phoneNumberService = phoneNumberService;
         }
 
         /// <summary>
@@ -104,6 +108,16 @@ namespace CustomerSupportSystem.Areas.Identity.Pages.Account.Manage
             {
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
                 if (!setPhoneResult.Succeeded)
+                {
+                    StatusMessage = "Unexpected error when trying to set phone number.";
+                    return RedirectToPage();
+                }
+
+                try
+                {
+                    await _phoneNumberService.UpdatePhoneNumber(phoneNumber, Input.PhoneNumber);
+                }
+                catch
                 {
                     StatusMessage = "Unexpected error when trying to set phone number.";
                     return RedirectToPage();

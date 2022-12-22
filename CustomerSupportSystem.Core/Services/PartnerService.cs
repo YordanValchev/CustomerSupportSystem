@@ -17,6 +17,7 @@
         public async Task<IEnumerable<PartnerConsultantsModel>> AllConsultants()
         {
             return await repo.AllReadonly<Employee>()
+                .Where(e => e.IsActive ?? false)
                 .OrderBy(e => e.FirstName)
                 .ThenBy(e => e.LastName)    
                 .Select(e => new PartnerConsultantsModel()
@@ -39,7 +40,7 @@
                 .ToListAsync();
         }
 
-        public async Task<bool> ConsultantExists(int id)
+        public async Task<bool> ConsultantExists(int? id)
         {
             return await repo.AllReadonly<Employee>()
                 .AnyAsync(e => e.Id == id);

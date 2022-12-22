@@ -1,0 +1,12 @@
+﻿@{
+    ViewData["Title"] = "Edit employee";
+    ViewData["ActivePage"] = NavPagesService.Employees;
+}
+
+<h2 class="text-center mb-3">@ViewBag.Title</h2>
+
+<partial name="_EmployeeFormPartial" model="@Model" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

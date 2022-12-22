@@ -23,4 +23,8 @@
     <ProjectReference Include="..\CustomerSupportSystem.Core\CustomerSupportSystem.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Employees\" />
+  </ItemGroup>
+
 </Project>

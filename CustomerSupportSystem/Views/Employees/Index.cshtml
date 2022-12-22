@@ -1,8 +1,8 @@
-﻿@model ContactsQueryModel
+﻿@model EmployeesQueryModel
 
 @{
-    ViewData["Title"] = "Contacts";
-    ViewData["ActivePage"] = NavPagesService.Contacts;
+    ViewData["Title"] = "Employees";
+    ViewData["ActivePage"] = NavPagesService.Employees;
 }
 
 <div class="row">
@@ -28,6 +28,15 @@
             </div>
         </form>
     </div>
+    @if (User.IsInRole("Administrator"))
+    {
+        <div class="col-md-2 text-center">
+            <a class="btn btn-primary" role="button" id="AddEmployee" asp-area="" asp-controller="Employees" asp-action="Add">
+                <i class="bi bi-building-add"></i>
+                Add employee
+            </a>
+        </div>
+    }
 </div>
 <br />
 <div class="text-center">
@@ -35,44 +44,44 @@
         <thead>
             <tr>
                 <th scope="col">
-                    <a class="text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Index"
+                    <a class="text-decoration-none" asp-area="" asp-controller="Employees" asp-action="Index"
                        asp-route-sortOrder="@Model.SortFields.Id">
-                        @Html.DisplayNameFor(model => model.Contacts.First().Id)
+                        @Html.DisplayNameFor(model => model.Employees.First().Id)
                         <i class="bi @Model.SortFields.IdImageClass"></i>
                     </a>
                 </th>
                 <th scope="col">
-                    <a class="text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Index"
+                    <a class="text-decoration-none" asp-area="" asp-controller="Employees" asp-action="Index"
                        asp-route-sortOrder="@Model.SortFields.FirstName">
-                        @Html.DisplayNameFor(model => model.Contacts.First().FirstName)
+                        @Html.DisplayNameFor(model => model.Employees.First().FirstName)
                         <i class="bi @Model.SortFields.FirstNameImageClass"></i>
                     </a>
                 </th>
                 <th scope="col">
-                    <a class="text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Index"
+                    <a class="text-decoration-none" asp-area="" asp-controller="Employees" asp-action="Index"
                        asp-route-sortOrder="@Model.SortFields.LastName">
-                        @Html.DisplayNameFor(model => model.Contacts.First().LastName)
+                        @Html.DisplayNameFor(model => model.Employees.First().LastName)
                         <i class="bi @Model.SortFields.LastNameImageClass"></i>
                     </a>
                 </th>
                 <th scope="col">
-                    <a class="text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Index"
+                    <a class="text-decoration-none" asp-area="" asp-controller="Employees" asp-action="Index"
                        asp-route-sortOrder="@Model.SortFields.JobTitle">
-                        @Html.DisplayNameFor(model => model.Contacts.First().JobTitle)
+                        @Html.DisplayNameFor(model => model.Employees.First().JobTitle)
                         <i class="bi @Model.SortFields.JobTitleImageClass"></i>
                     </a>
                 </th>
                 <th scope="col">
-                    <a class="text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Index"
+                    <a class="text-decoration-none" asp-area="" asp-controller="Employees" asp-action="Index"
                        asp-route-sortOrder="@Model.SortFields.EmailAddress">
-                        @Html.DisplayNameFor(model => model.Contacts.First().EmailAddress)
+                        @Html.DisplayNameFor(model => model.Employees.First().EmailAddress)
                         <i class="bi @Model.SortFields.EmailAddressImageClass"></i>
                     </a>
                 </th>
                 <th scope="col">
-                    <a class="text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Index"
+                    <a class="text-decoration-none" asp-area="" asp-controller="Employees" asp-action="Index"
                        asp-route-sortOrder="@Model.SortFields.PhoneNumber">
-                        @Html.DisplayNameFor(model => model.Contacts.First().PhoneNumber)
+                        @Html.DisplayNameFor(model => model.Employees.First().PhoneNumber)
                         <i class="bi @Model.SortFields.PhoneNumberImageClass"></i>
                     </a>
                 </th>
@@ -80,41 +89,41 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var contact in Model.Contacts)
+            @foreach (var employee in Model.Employees)
             {
                 <tr>
                     <th scope="row">
-                        <a class="link-dark link-dark text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Details" asp-route-id="@contact.Id">
-                            @contact.Id
+                        <a class="link-dark link-dark text-decoration-none" asp-area="" asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id">
+                            @employee.Id
                         </a>
                     </th>
                     <td>
-                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Details" asp-route-id="@contact.Id">
-                            @contact.FirstName
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id">
+                            @employee.FirstName
                         </a>
                     </td>
                     <td>
-                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Details" asp-route-id="@contact.Id">
-                            @contact.LastName
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id">
+                            @employee.LastName
                         </a>
                     </td>
                     <td>
-                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Details" asp-route-id="@contact.Id">
-                            @contact.JobTitle
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id">
+                            @employee.JobTitle
                         </a>
                     </td>
                     <td>
-                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Details" asp-route-id="@contact.Id">
-                            @contact.EmailAddress
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id">
+                            @employee.EmailAddress
                         </a>
                     </td>
                     <td>
-                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Details" asp-route-id="@contact.Id">
-                            @contact.PhoneNumber
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id">
+                            @employee.PhoneNumber
                         </a>
                     </td>
                     <td>
-                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Details" asp-route-id="@contact.Id" title="Details">
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id" title="Details">
                             <i class="bi bi-card-text"></i>
                         </a>
                     </td>
@@ -124,13 +133,13 @@
     </table>
 </div>
 
-@if (!Model.Contacts.Any())
+@if (!Model.Employees.Any())
 {
     <h6 class="text-center">No records found!</h6>
 }
 else
 {
-    var totalPages = Math.Ceiling((double)Model.TotalRowsCount / ContactsQueryModel.RowsPerPage);
+    var totalPages = Math.Ceiling((double)Model.TotalRowsCount / EmployeesQueryModel.RowsPerPage);
 
     <div class="row">
         <nav aria-label="Table navigation">
@@ -141,7 +150,7 @@ else
                     int previousPage = Model.CurrentPage - 1;
 
                     <li class="page-item">
-                        <a class="page-link" asp-area="" asp-controller="Contacts" asp-action="Index" asp-route-currentPage="@previousPage">Previous</a>
+                        <a class="page-link" asp-area="" asp-controller="Employees" asp-action="Index" asp-route-currentPage="@previousPage">Previous</a>
                     </li>
                 }
                 else
@@ -156,7 +165,7 @@ else
                     string activeClass = currentPage == Model.CurrentPage ? "active" : string.Empty;
 
                     <li class="page-item @activeClass">
-                        <a class="page-link" asp-area="" asp-controller="Contacts" asp-action="Index" asp-route-currentPage="@currentPage">@currentPage</a>
+                        <a class="page-link" asp-area="" asp-controller="Employees" asp-action="Index" asp-route-currentPage="@currentPage">@currentPage</a>
                     </li>
                 }
 
@@ -165,7 +174,7 @@ else
                     int nextPage = Model.CurrentPage + 1;
 
                     <li class="page-item">
-                        <a class="page-link" asp-area="" asp-controller="Contacts" asp-action="Index" asp-route-currentPage="@nextPage">Next</a>
+                        <a class="page-link" asp-area="" asp-controller="Employees" asp-action="Index" asp-route-currentPage="@nextPage">Next</a>
                     </li>
                 }
                 else

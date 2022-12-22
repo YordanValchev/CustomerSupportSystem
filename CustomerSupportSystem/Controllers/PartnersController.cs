@@ -80,11 +80,21 @@ namespace CustomerSupportSystem.Controllers
             if ((await partnerService.CountryExists(model.CountryId)) == false)
             {
                 ModelState.AddModelError(nameof(model.CountryId), "The country does not exists");
+
+                model.Countries = await partnerService.AllCountries();
+                model.Consultants = await partnerService.AllConsultants();
+
+                return View(model);
             }
 
-            if ((await partnerService.ConsultantExists(model.ConsultantId)) == false)
+            if (model.ConsultantId != null && !await partnerService.ConsultantExists(model.ConsultantId))
             {
                 ModelState.AddModelError(nameof(model.ConsultantId), "The consultant does not exists");
+
+                model.Countries = await partnerService.AllCountries();
+                model.Consultants = await partnerService.AllConsultants();
+
+                return View(model);
             }
 
             int id = await partnerService.Create(model);
@@ -138,11 +148,21 @@ namespace CustomerSupportSystem.Controllers
             if ((await partnerService.CountryExists(model.CountryId)) == false)
             {
                 ModelState.AddModelError(nameof(model.CountryId), "The country does not exists");
+
+                model.Countries = await partnerService.AllCountries();
+                model.Consultants = await partnerService.AllConsultants();
+
+                return View(model);
             }
 
-            if ((await partnerService.ConsultantExists(model.ConsultantId)) == false)
+            if (model.ConsultantId != null && !await partnerService.ConsultantExists(model.ConsultantId))
             {
                 ModelState.AddModelError(nameof(model.ConsultantId), "The consultant does not exists");
+
+                model.Countries = await partnerService.AllCountries();
+                model.Consultants = await partnerService.AllConsultants();
+
+                return View(model);
             }
 
             await partnerService.Edit(model.Id, model);

@@ -1,4 +1,6 @@
-﻿namespace CustomerSupportSystem.Core.Contracts
+﻿using System.Security.Claims;
+
+namespace CustomerSupportSystem.Core.Contracts
 {
     public interface IUserService
     {
@@ -11,5 +13,7 @@
         Task ChangeUserEmail(string id, string emailAddress);
 
         Task ChangeUserPhoneNumber(string id, string phoneNumber);
+
+        Task<string> UserName(ClaimsPrincipal user);
     }
 }

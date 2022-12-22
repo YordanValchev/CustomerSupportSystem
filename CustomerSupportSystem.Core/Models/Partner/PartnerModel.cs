@@ -36,9 +36,8 @@
         [StringLength(DataTypesConstants.WebsiteMaxLenght)]
         public string? Website { get; set; }
 
-        [Required]
         [Display(Name = "Consultant")]
-        public int ConsultantId { get; set; }
+        public int? ConsultantId { get; set; }
 
         [Display(Name = "Subscription contract number")]
         [StringLength(DataTypesConstants.SubscriptionContractNumberMaxLenght)]

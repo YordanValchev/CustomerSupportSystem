@@ -10,11 +10,15 @@ namespace CustomerSupportSystem.Core.Services
 
         public static string Contacts => "Contacts";
 
+        public static string Employees => "Employees";
+
         public static string IndexNavHandle(ViewContext viewContext) => NavHandle(viewContext, Index);
 
         public static string PartnersNavHandle(ViewContext viewContext) => NavHandle(viewContext, Partners);
 
         public static string ContactsNavHandle(ViewContext viewContext) => NavHandle(viewContext, Contacts);
+
+        public static string EmployeesNavHandle(ViewContext viewContext) => NavHandle(viewContext, Employees);
 
         private static string NavHandle(ViewContext viewContext, string page)
         {

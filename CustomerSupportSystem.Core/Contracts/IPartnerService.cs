@@ -10,7 +10,7 @@ namespace CustomerSupportSystem.Core.Contracts
 
         Task<IEnumerable<PartnerConsultantsModel>> AllConsultants();
 
-        Task<bool> ConsultantExists(int id);
+        Task<bool> ConsultantExists(int? id);
 
         Task<int> Create(PartnerModel model);
 

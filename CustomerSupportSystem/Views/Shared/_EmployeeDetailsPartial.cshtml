@@ -1,0 +1,27 @@
+﻿@model EmployeeDetailsModel
+
+<div class="row g-3">
+    <input type="hidden" asp-for="@Model.Id" />
+    <input type="hidden" asp-for="@Model.PartnerId" />
+    <input type="hidden" asp-for="@Model.UserId" />
+    <div class="col-md-6">
+        <label asp-for="FirstName" class="form-label"></label>
+        <input asp-for="FirstName" class="form-control" readonly>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="LastName" class="form-label"></label>
+        <input asp-for="LastName" class="form-control" readonly>
+    </div>
+    <div class="col-12">
+        <label asp-for="JobTitle" class="form-label"></label>
+        <input asp-for="JobTitle" class="form-control" readonly>
+    </div>
+    <div class="col-12">
+        <label asp-for="EmailAddress" class="form-label"></label>
+        <input asp-for="EmailAddress" class="form-control" readonly>
+    </div>
+    <div class="col-12">
+        <label asp-for="PhoneNumber" class="form-label"></label>
+        <input asp-for="PhoneNumber" class="form-control" readonly>
+    </div>
+</div>
