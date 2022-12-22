@@ -1,26 +1,24 @@
-﻿using CustomerSupportSystem.Infrastructure.Data.Models;
-
-namespace CustomerSupportSystem.Core.Services
+﻿namespace CustomerSupportSystem.Core.Services
 {
-    public class JobTitleService : IJobTitleService
+    public class TicketStatusService : ITicketStatusService
     {
         private readonly IRepository repo;
 
         private readonly ILogger logger;
 
-        public JobTitleService(
+        public TicketStatusService(
             IRepository _repo,
-            ILogger<JobTitleService> _logger)
+            ILogger<TicketStatusService> _logger)
         {
             repo = _repo;
             logger = _logger;
         }
 
-        public async Task<IEnumerable<JobTitleModel>> All()
+        public async Task<IEnumerable<TicketStatusModel>> All()
         {
-            return await repo.AllReadonly<JobTitle>()
+            return await repo.AllReadonly<TicketStatus>()
                 .OrderBy(e => e.Title)
-                .Select(e => new JobTitleModel()
+                .Select(e => new TicketStatusModel()
                 {
                     Id = e.Id,
                     Title = e.Title
@@ -28,16 +26,16 @@ namespace CustomerSupportSystem.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<int> Create(JobTitleModel model)
+        public async Task<int> Create(TicketStatusModel model)
         {
-            var jobTitle = new JobTitle()
+            var entity = new TicketStatusModel()
             {
-                Title = model.Title,
+                Title = model.Title
             };
 
             try
             {
-                await repo.AddAsync(jobTitle);
+                await repo.AddAsync(entity);
                 await repo.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -46,12 +44,12 @@ namespace CustomerSupportSystem.Core.Services
                 throw new ApplicationException("Database failed to save info", ex);
             }
 
-            return jobTitle.Id;
+            return entity.Id;
         }
 
-        public async Task Edit(JobTitleModel model)
+        public async Task Edit(TicketStatusModel model)
         {
-            var entity = await repo.GetByIdAsync<JobTitle>(model.Id);
+            var entity = await repo.GetByIdAsync<TicketStatus>(model.Id);
 
             entity.Title = model.Title;
 
@@ -68,7 +66,7 @@ namespace CustomerSupportSystem.Core.Services
 
         public async Task<bool> Exists(int id)
         {
-            return await repo.AllReadonly<JobTitle>()
+            return await repo.AllReadonly<TicketStatus>()
                 .AnyAsync(e => e.Id == id);
         }
     }

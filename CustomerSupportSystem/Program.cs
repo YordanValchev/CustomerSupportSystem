@@ -1,3 +1,4 @@
+using CustomerSupportSystem.Extensions;
 using CustomerSupportSystem.Infrastructure.Data.Common;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,14 +24,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddScoped<IRepository, Repository>();
-builder.Services.AddScoped<IPartnerService, PartnerService>();
-builder.Services.AddScoped<IContactService, ContactService>();
-builder.Services.AddScoped<IJobTitleService, JobTitleService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IEmailAddressService, EmailAddressService>();
-builder.Services.AddScoped<IPhoneNumberService, PhoneNumberService>();
-
+builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 

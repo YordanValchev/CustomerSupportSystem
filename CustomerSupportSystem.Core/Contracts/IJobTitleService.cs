@@ -7,5 +7,7 @@
         Task<bool> Exists(int id);
 
         Task<int> Create(JobTitleModel model);
+
+        Task Edit(JobTitleModel model);
     }
 }
