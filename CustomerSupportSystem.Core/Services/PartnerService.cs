@@ -1,12 +1,4 @@
-﻿using CustomerSupportSystem.Core.Models.Partner;
-using CustomerSupportSystem.Infrastructure.Data.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using System.Net;
-using System.Net.Mail;
-using System.Xml.Linq;
-
-namespace CustomerSupportSystem.Core.Services
+﻿namespace CustomerSupportSystem.Core.Services
 {
     public class PartnerService : IPartnerService
     {

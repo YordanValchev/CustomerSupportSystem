@@ -1,4 +1,5 @@
-﻿using CustomerSupportSystem.Infrastructure.Data.Models;
+﻿using CustomerSupportSystem.Core.Models.Partner;
+using CustomerSupportSystem.Infrastructure.Data.Models;
 
 namespace CustomerSupportSystem.Controllers
 {
@@ -38,9 +39,22 @@ namespace CustomerSupportSystem.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index([FromQuery] ContactsQueryModel query)
         {
-            return View();
+            var result = await contactService.QueryContacts(
+                query.SortOrder,
+                query.PartnerId,
+                query.Filter,
+                query.CurrentPage,
+                PartnersQueryModel.RowsPerPage
+                );
+
+            query.TotalRowsCount = result.TotalRowsCount;
+            query.Partners = await contactService.AllPartners();
+            query.Contacts = result.Contacts;
+            query.SortFields = result.SortFields;
+
+            return View(query);
         }
 
         [HttpGet]
@@ -129,7 +143,7 @@ namespace CustomerSupportSystem.Controllers
             };
 
             model.Partners = await contactService.ContactDetailsPartners(id);
-            model.AllPartners = await contactService.AllPartners(id);
+            model.AllPartners = await contactService.AllPartnersByContactId(id);
 
             return View(model);
         }
@@ -140,7 +154,7 @@ namespace CustomerSupportSystem.Controllers
             if ((await contactService.Exists(model.Id)) == false)
             {
                 model.Partners = await contactService.ContactDetailsPartners(model.Id);
-                model.AllPartners = await contactService.AllPartners(model.Id);
+                model.AllPartners = await contactService.AllPartnersByContactId(model.Id);
 
                 ModelState.AddModelError(nameof(model.PartnerId), "Error loading contact");
                 return View(model);
@@ -149,16 +163,24 @@ namespace CustomerSupportSystem.Controllers
             if (model.PartnerId == null || !await partnerService.PartnerExists(model.PartnerId ?? -1))
             {
                 model.Partners = await contactService.ContactDetailsPartners(model.Id);
-                model.AllPartners = await contactService.AllPartners(model.Id);
+                model.AllPartners = await contactService.AllPartnersByContactId(model.Id);
 
                 ModelState.AddModelError(nameof(model.PartnerId), "Invalid partner!");
                 return View(model);
             }
-            
-            await contactService.AddPartner(model.Id, model.PartnerId ?? -1);
 
+            if (!string.IsNullOrWhiteSpace(model.FormName) && model.FormName == "AddPartner")
+            {
+                await contactService.AddPartner(model.Id, model.PartnerId ?? -1);
+            }
+            else if (!string.IsNullOrWhiteSpace(model.FormName) && model.FormName == "RemovePartner")
+            {
+                await contactService.RemovePartner(model.Id, model.PartnerId ?? -1);
+            }
+
+            model.PartnerId = null;
             model.Partners = await contactService.ContactDetailsPartners(model.Id);
-            model.AllPartners = await contactService.AllPartners(model.Id);
+            model.AllPartners = await contactService.AllPartnersByContactId(model.Id);
 
             return View(model);
         }

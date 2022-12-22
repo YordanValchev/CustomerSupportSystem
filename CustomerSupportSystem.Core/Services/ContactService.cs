@@ -1,8 +1,5 @@
-﻿using CustomerSupportSystem.Core.Models.Partner;
-using CustomerSupportSystem.Infrastructure.Data.Models;
-using Microsoft.AspNetCore.Identity;
+﻿using CustomerSupportSystem.Infrastructure.Data.Models;
 using System.Data;
-using System.Net.Mail;
 
 namespace CustomerSupportSystem.Core.Services
 {
@@ -14,33 +11,24 @@ namespace CustomerSupportSystem.Core.Services
 
         private readonly IPhoneNumberService phoneNumberService;
 
+        private readonly IPartnerService partnerService;
+
         private readonly ILogger logger;
 
         public ContactService(
             IRepository _repo,
             IEmailAddressService _emailService,
             IPhoneNumberService _phoneNumberService,
+            IPartnerService _partnerService,
             ILogger<ContactService> _logger
             )
         {
             repo = _repo;
             emailService = _emailService;
             phoneNumberService = _phoneNumberService;
+            partnerService = _partnerService;
             logger = _logger;
         }
-
-        //public async Task<IEnumerable<ContactModel>> All()
-        //{
-        //    return await repo.AllReadonly<Contact>()
-        //        .OrderBy(e => e.FirstName)
-        //        .ThenBy(e => e.LastName)
-        //        .Select(e => new ContactModel()
-        //        {
-        //            Id = e.Id,
-        //            Title = e.Title
-        //        })
-        //        .ToListAsync();
-        //}
 
         public async Task<int> Create(ContactModel model)
         {
@@ -164,7 +152,19 @@ namespace CustomerSupportSystem.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<ContactDetailsPartnerModel>> AllPartners(int id)
+        public async Task<IEnumerable<ContactDetailsPartnerModel>> AllPartners()
+        {
+            return await repo.AllReadonly<Partner>()
+                .Where(partner => partner.IsActive ?? false)
+                .Select(partner => new ContactDetailsPartnerModel()
+                {
+                    Id = partner.Id,
+                    Name = partner.Name
+                })
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<ContactDetailsPartnerModel>> AllPartnersByContactId(int id)
         {
             return await repo.AllReadonly<Partner>()
                 .Where(partner => partner.IsActive ?? false)
@@ -229,6 +229,146 @@ namespace CustomerSupportSystem.Core.Services
                     throw new ApplicationException("Database failed to save info", ex);
                 }
             }
+        }
+
+        public async Task RemovePartner(int contactId, int partnerId)
+        {
+            if (partnerId > 0)
+            {
+                var partnerContact = await repo.All<PartnerContact>()
+                    .Where(partnerContact => partnerContact.ContactId == contactId && partnerContact.PartnerId == partnerId)
+                    .FirstAsync();
+
+                try
+                {
+                    repo.Delete(partnerContact);
+                    await repo.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(nameof(AddPartner), ex);
+                    throw new ApplicationException("Database failed to delete info", ex);
+                }
+            }
+        }
+
+        public async Task<ContactsQueryModel> QueryContacts(string? sortOrder, int partnerId, string? filter, int currentPage, int rowsPerPage)
+        {
+            var model = new ContactsQueryModel();
+
+            var contacts = repo.AllReadonly<Contact>()
+                .Where(contact => contact.IsActive == true);
+
+            if (await partnerService.PartnerExists(partnerId))
+            {
+                contacts = contacts
+                    .Include(contact => contact.PartnerContacts)
+                    .Where(contact => contact.PartnerContacts.Any(partnerContact => partnerContact.PartnerId == partnerId));
+            }
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filter = $"%{filter.ToLower()}%";
+
+                contacts = contacts
+                    .Include(c => c.Emails)
+                    .Include(c => c.PhoneNumbers)
+                    .Where(c =>
+                        EF.Functions.Like(c.FirstName == null ? string.Empty : c.FirstName.ToLower(), filter) ||
+                        EF.Functions.Like(c.LastName == null ? string.Empty : c.LastName.ToLower(), filter) ||
+                        EF.Functions.Like(c.JobTitle == null ? string.Empty : c.JobTitle.Title.ToLower(), filter) ||
+                        EF.Functions.Like(c.Emails.FirstOrDefault(e => e.IsMain == true) == null ? string.Empty : c.Emails.FirstOrDefault(e => e.IsMain == true).EmailAddress.ToLower(), filter) ||
+                        EF.Functions.Like(c.PhoneNumbers.FirstOrDefault(e => e.IsMain == true) == null ? string.Empty : c.PhoneNumbers.FirstOrDefault(e => e.IsMain == true).Number.ToLower(), filter)
+                        );
+            }
+
+            model.SortFields.Id = string.IsNullOrEmpty(sortOrder) ? "Id_Desc" : "";
+            model.SortFields.FirstName = sortOrder == "FirstName" ? "FirstName_Desc" : "FirstName";
+            model.SortFields.LastName = sortOrder == "LastName" ? "LastName_Desc" : "LastName";
+            model.SortFields.JobTitle = sortOrder == "JobTitle" ? "JobTitle_Desc" : "JobTitle";
+            model.SortFields.EmailAddress = sortOrder == "EmailAddress" ? "EmailAddress_Desc" : "EmailAddress";
+            model.SortFields.PhoneNumber = sortOrder == "PhoneNumber" ? "PhoneNumber_Desc" : "PhoneNumber";
+
+            contacts = sortOrder switch
+            {
+                "FirstName" => contacts.OrderBy(s => s.FirstName),
+                "LastName" => contacts.OrderBy(s => s.LastName),
+                "JobTitle" => contacts.OrderBy(s => s.JobTitle),
+                "EmailAddress" => contacts.OrderBy(s => s.Emails.FirstOrDefault(e => e.IsMain == true) == null ? string.Empty : s.Emails.FirstOrDefault(e => e.IsMain == true).EmailAddress),
+                "PhoneNumber" => contacts.OrderBy(s => s.PhoneNumbers.FirstOrDefault(e => e.IsMain == true) == null ? string.Empty : s.PhoneNumbers.FirstOrDefault(e => e.IsMain == true).Number),
+
+                "FirstName_Desc" => contacts.OrderByDescending(s => s.FirstName),
+                "LastName_Desc" => contacts.OrderByDescending(s => s.LastName),
+                "JobTitle_Desc" => contacts.OrderByDescending(s => s.JobTitle),
+                "EmailAddress_Desc" => contacts.OrderByDescending(s => s.Emails.FirstOrDefault(e => e.IsMain == true) == null ? string.Empty : s.Emails.FirstOrDefault(e => e.IsMain == true).EmailAddress),
+                "PhoneNumber_Desc" => contacts.OrderByDescending(s => s.PhoneNumbers.FirstOrDefault(e => e.IsMain == true) == null ? string.Empty : s.PhoneNumbers.FirstOrDefault(e => e.IsMain == true).Number),
+
+                "Id_Desc" => contacts.OrderByDescending(s => s.Id),
+                _ => contacts.OrderBy(s => s.Id),
+            };
+
+            string ascOrderImageClass = "bi-caret-up";
+            string descOrderImageClass = "bi-caret-down";
+
+            switch (sortOrder)
+            {
+                case "Name":
+                    model.SortFields.FirstNameImageClass = ascOrderImageClass;
+                    break;
+                case "Address":
+                    model.SortFields.LastNameImageClass = ascOrderImageClass;
+                    break;
+                case "JobTitle":
+                    model.SortFields.JobTitleImageClass = ascOrderImageClass;
+                    break;
+                case "EmailAddress":
+                    model.SortFields.EmailAddressImageClass = ascOrderImageClass;
+                    break;
+                case "PhoneNumber":
+                    model.SortFields.PhoneNumberImageClass = ascOrderImageClass;
+                    break;
+
+                case "Name_Desc":
+                    model.SortFields.FirstNameImageClass = descOrderImageClass;
+                    break;
+                case "Address_Desc":
+                    model.SortFields.LastNameImageClass = descOrderImageClass;
+                    break;
+                case "JobTitle_Desc":
+                    model.SortFields.JobTitleImageClass = descOrderImageClass;
+                    break;
+                case "EmailAddress_Desc":
+                    model.SortFields.EmailAddressImageClass = descOrderImageClass;
+                    break;
+                case "PhoneNumber_Desc":
+                    model.SortFields.PhoneNumberImageClass = descOrderImageClass;
+                    break;
+
+                case "Id_Desc":
+                    model.SortFields.IdImageClass = descOrderImageClass;
+                    break;
+                default:
+                    model.SortFields.IdImageClass = ascOrderImageClass;
+                    break;
+            };
+
+            model.Contacts = await contacts
+                .Skip((currentPage - 1) * rowsPerPage)
+                .Take(rowsPerPage)
+                .Select(contact => new ContactsQueryDetailModel()
+                {
+                    Id = contact.Id,
+                    FirstName = contact.FirstName,
+                    LastName = contact.LastName,
+                    JobTitle = contact.JobTitle.Title,
+                    PhoneNumber = contact.PhoneNumbers.First(e => e.IsMain == true).Number,
+                    EmailAddress = contact.Emails.First(e => e.IsMain == true).EmailAddress
+                })
+                .ToListAsync();
+
+            model.TotalRowsCount = await contacts.CountAsync();
+
+            return model;
         }
     }
 }

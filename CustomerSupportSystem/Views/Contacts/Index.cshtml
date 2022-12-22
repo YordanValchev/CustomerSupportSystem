@@ -1,5 +1,182 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model ContactsQueryModel
+
 @{
+    ViewData["Title"] = "Contacts";
+    ViewData["ActivePage"] = NavPagesService.Contacts;
 }
+
+<div class="row">
+    <div class="col-md-10">
+        <form method="get">
+            <div class="row">
+                <div class="col-md-4">
+                    <select asp-for="PartnerId" class="form-control">
+                        <option selected value="">All partners</option>
+                        @foreach (var partner in Model.Partners)
+                        {
+                            <option value="@partner.Id">@partner.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <input asp-for="Filter" class="form-control" placeholder="Search">
+                    <span asp-validation-for="Filter" class="small text-danger"></span>
+                </div>
+                <div class="col-md-2">
+                    <input class="btn btn-primary" role="button" type="submit" value="Apply" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<br />
+<div class="text-center">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Index"
+                       asp-route-sortOrder="@Model.SortFields.Id">
+                        @Html.DisplayNameFor(model => model.Contacts.First().Id)
+                        <i class="bi @Model.SortFields.IdImageClass"></i>
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Index"
+                       asp-route-sortOrder="@Model.SortFields.FirstName">
+                        @Html.DisplayNameFor(model => model.Contacts.First().FirstName)
+                        <i class="bi @Model.SortFields.FirstNameImageClass"></i>
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Index"
+                       asp-route-sortOrder="@Model.SortFields.LastName">
+                        @Html.DisplayNameFor(model => model.Contacts.First().LastName)
+                        <i class="bi @Model.SortFields.LastNameImageClass"></i>
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Index"
+                       asp-route-sortOrder="@Model.SortFields.JobTitle">
+                        @Html.DisplayNameFor(model => model.Contacts.First().JobTitle)
+                        <i class="bi @Model.SortFields.JobTitleImageClass"></i>
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Index"
+                       asp-route-sortOrder="@Model.SortFields.EmailAddress">
+                        @Html.DisplayNameFor(model => model.Contacts.First().EmailAddress)
+                        <i class="bi @Model.SortFields.EmailAddressImageClass"></i>
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Index"
+                       asp-route-sortOrder="@Model.SortFields.PhoneNumber">
+                        @Html.DisplayNameFor(model => model.Contacts.First().PhoneNumber)
+                        <i class="bi @Model.SortFields.PhoneNumberImageClass"></i>
+                    </a>
+                </th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var contact in Model.Contacts)
+            {
+                <tr>
+                    <th scope="row">
+                        <a class="link-dark link-dark text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Details" asp-route-id="@contact.Id">
+                            @contact.Id
+                        </a>
+                    </th>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Details" asp-route-id="@contact.Id">
+                            @contact.FirstName
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Details" asp-route-id="@contact.Id">
+                            @contact.LastName
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Details" asp-route-id="@contact.Id">
+                            @contact.JobTitle
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Details" asp-route-id="@contact.Id">
+                            @contact.EmailAddress
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Details" asp-route-id="@contact.Id">
+                            @contact.PhoneNumber
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Contacts" asp-action="Details" asp-route-id="@contact.Id" title="Details">
+                            <i class="bi bi-card-text"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (!Model.Contacts.Any())
+{
+    <h6 class="text-center">No records found!</h6>
+}
+else
+{
+    var totalPages = Math.Ceiling((double)Model.TotalRowsCount / PartnersQueryModel.RowsPerPage);
+
+    <div class="row">
+        <nav aria-label="Table navigation">
+            <ul class="pagination">
+
+                @if (Model.CurrentPage > 1)
+                {
+                    int previousPage = Model.CurrentPage - 1;
+
+                    <li class="page-item">
+                        <a class="page-link" asp-area="" asp-controller="Contacts" asp-action="Index" asp-route-currentPage="@previousPage">Previous</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link">Previous</a>
+                    </li>
+                }
+
+                @for (int currentPage = 1; currentPage <= totalPages; currentPage++)
+                {
+                    string activeClass = currentPage == Model.CurrentPage ? "active" : string.Empty;
+
+                    <li class="page-item @activeClass">
+                        <a class="page-link" asp-area="" asp-controller="Contacts" asp-action="Index" asp-route-currentPage="@currentPage">@currentPage</a>
+                    </li>
+                }
+
+                @if (Model.CurrentPage < totalPages)
+                {
+                    int nextPage = Model.CurrentPage + 1;
+
+                    <li class="page-item">
+                        <a class="page-link" asp-area="" asp-controller="Contacts" asp-action="Index" asp-route-currentPage="@nextPage">Next</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link">Next</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+}
+
+

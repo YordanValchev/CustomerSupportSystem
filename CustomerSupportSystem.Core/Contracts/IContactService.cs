@@ -18,8 +18,14 @@ namespace CustomerSupportSystem.Core.Contracts
 
         Task<IEnumerable<ContactDetailsPartnerModel>> ContactDetailsPartners(int id);
 
-        Task<IEnumerable<ContactDetailsPartnerModel>> AllPartners(int id);
+        Task<IEnumerable<ContactDetailsPartnerModel>> AllPartners();
+
+        Task<IEnumerable<ContactDetailsPartnerModel>> AllPartnersByContactId(int id);
 
         Task AddPartner(int contactId, int partnerId);
+
+        Task RemovePartner(int contactId, int partnerId);
+
+        Task<ContactsQueryModel> QueryContacts(string? sortOrder, int partnerId, string? filter, int currentPage, int rowsPerPage);
     }
 }
