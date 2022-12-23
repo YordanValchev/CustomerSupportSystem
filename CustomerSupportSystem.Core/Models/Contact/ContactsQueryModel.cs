@@ -1,6 +1,4 @@
-﻿using CustomerSupportSystem.Core.Models.Partner;
-
-namespace CustomerSupportSystem.Core.Models.Contact
+﻿namespace CustomerSupportSystem.Core.Models.Contact
 {
     public class ContactsQueryModel
     {
@@ -20,6 +18,6 @@ namespace CustomerSupportSystem.Core.Models.Contact
 
         public IEnumerable<ContactsQueryDetailModel> Contacts { get; set; } = new List<ContactsQueryDetailModel>();
 
-        public IEnumerable<ContactDetailsPartnerModel> Partners { get; set; } = new List<ContactDetailsPartnerModel>();
+        public IEnumerable<PartnersListModel> Partners { get; set; } = new List<PartnersListModel>();
     }
 }

@@ -43,7 +43,7 @@
                 query.PartnerId,
                 query.Filter,
                 query.CurrentPage,
-                PartnersQueryModel.RowsPerPage
+                EmployeesQueryModel.RowsPerPage
                 );
 
             query.TotalRowsCount = result.TotalRowsCount;

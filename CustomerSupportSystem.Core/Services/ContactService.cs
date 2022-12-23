@@ -6,13 +6,9 @@ namespace CustomerSupportSystem.Core.Services
     public class ContactService : IContactService
     {
         private readonly IRepository repo;
-
         private readonly IEmailAddressService emailService;
-
         private readonly IPhoneNumberService phoneNumberService;
-
         private readonly IPartnerService partnerService;
-
         private readonly ILogger logger;
 
         public ContactService(
@@ -160,12 +156,12 @@ namespace CustomerSupportSystem.Core.Services
                 .FirstAsync();
         }
 
-        public async Task<IEnumerable<ContactDetailsPartnerModel>> ContactDetailsPartners(int id)
+        public async Task<IEnumerable<PartnersListModel>> ContactDetailsPartners(int id)
         {
             return await repo.AllReadonly<PartnerContact>()
                 .Include(partnerContact => partnerContact.Partner)
                 .Where(partnerContact => partnerContact.ContactId == id && (partnerContact.Partner.IsActive ?? false) == true)
-                .Select(partnerContact => new ContactDetailsPartnerModel()
+                .Select(partnerContact => new PartnersListModel()
                 {
                     Id = partnerContact.Partner.Id,
                     Name = partnerContact.Partner.Name
@@ -173,11 +169,11 @@ namespace CustomerSupportSystem.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<ContactDetailsPartnerModel>> AllPartners()
+        public async Task<IEnumerable<PartnersListModel>> AllPartners()
         {
             return await repo.AllReadonly<Partner>()
                 .Where(partner => partner.IsActive ?? false)
-                .Select(partner => new ContactDetailsPartnerModel()
+                .Select(partner => new PartnersListModel()
                 {
                     Id = partner.Id,
                     Name = partner.Name
@@ -185,13 +181,13 @@ namespace CustomerSupportSystem.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<ContactDetailsPartnerModel>> AllPartnersNotEqualToContactId(int id)
+        public async Task<IEnumerable<PartnersListModel>> AllPartnersNotEqualToContactId(int id)
         {
             return await repo.AllReadonly<Partner>()
                 .Where(partner => partner.IsActive ?? false)
                 .Include(partner => partner.PartnerContacts)
                 .Where(partner => !partner.PartnerContacts.Any(partnerContact => partnerContact.ContactId == id))
-                .Select(partner => new ContactDetailsPartnerModel()
+                .Select(partner => new PartnersListModel()
                 {
                     Id = partner.Id,
                     Name = partner.Name

@@ -4,7 +4,7 @@ namespace CustomerSupportSystem.Core.Services
 {
     public static class NavPagesService
     {
-        public static string Index => "Index";
+        public static string Tickets => "Tickets";
 
         public static string Partners => "Partners";
 
@@ -12,7 +12,7 @@ namespace CustomerSupportSystem.Core.Services
 
         public static string Employees => "Employees";
 
-        public static string IndexNavHandle(ViewContext viewContext) => NavHandle(viewContext, Index);
+        public static string TicketsNavHandle(ViewContext viewContext) => NavHandle(viewContext, Tickets);
 
         public static string PartnersNavHandle(ViewContext viewContext) => NavHandle(viewContext, Partners);
 

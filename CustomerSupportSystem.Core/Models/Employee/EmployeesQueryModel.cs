@@ -18,6 +18,6 @@
 
         public IEnumerable<EmployeesQueryDetailModel> Employees { get; set; } = new List<EmployeesQueryDetailModel>();
 
-        public IEnumerable<EmployeeDetailsPartnerModel> Partners { get; set; } = new List<EmployeeDetailsPartnerModel>();
+        public IEnumerable<PartnersListModel> Partners { get; set; } = new List<PartnersListModel>();
     }
 }

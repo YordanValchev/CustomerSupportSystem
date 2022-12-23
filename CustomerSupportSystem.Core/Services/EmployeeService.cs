@@ -49,11 +49,11 @@ namespace CustomerSupportSystem.Core.Services
             }
         }
 
-        public async Task<IEnumerable<EmployeeDetailsPartnerModel>> AllPartners()
+        public async Task<IEnumerable<PartnersListModel>> AllPartners()
         {
             return await repo.AllReadonly<Partner>()
                 .Where(partner => partner.IsActive ?? false)
-                .Select(partner => new EmployeeDetailsPartnerModel()
+                .Select(partner => new PartnersListModel()
                 {
                     Id = partner.Id,
                     Name = partner.Name
@@ -61,11 +61,11 @@ namespace CustomerSupportSystem.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<EmployeeDetailsPartnerModel>> AllPartnersWithoutConsultant()
+        public async Task<IEnumerable<PartnersListModel>> AllPartnersWithoutConsultant()
         {
             return await repo.AllReadonly<Partner>()
                 .Where(partner => (partner.IsActive ?? false) && partner.ConsultantId == null)
-                .Select(partner => new EmployeeDetailsPartnerModel()
+                .Select(partner => new PartnersListModel()
                 {
                     Id = partner.Id,
                     Name = partner.Name
@@ -227,11 +227,11 @@ namespace CustomerSupportSystem.Core.Services
                 .FirstAsync();
         }
 
-        public async Task<IEnumerable<EmployeeDetailsPartnerModel>> EmployeeDetailsPartners(int id)
+        public async Task<IEnumerable<PartnersListModel>> EmployeeDetailsPartners(int id)
         {
             return await repo.AllReadonly<Partner>()
                 .Where(partner => partner.ConsultantId == id && (partner.IsActive ?? false))
-                .Select(partner => new EmployeeDetailsPartnerModel()
+                .Select(partner => new PartnersListModel()
                 {
                     Id = partner.Id,
                     Name = partner.Name
@@ -382,6 +382,18 @@ namespace CustomerSupportSystem.Core.Services
             model.TotalRowsCount = await entities.CountAsync();
 
             return model;
+        }
+
+        public async Task<IEnumerable<UsersListModel>> GetUsersList()
+        {
+            return await repo.AllReadonly<Employee>()
+                .Where(e => e.UserId != null && (e.IsActive ?? false))
+                .Select(e => new UsersListModel()
+                {
+                    Id = e.UserId,
+                    Name = $"{e.FirstName} {e.LastName}"
+                })
+                .ToListAsync();
         }
     }
 }

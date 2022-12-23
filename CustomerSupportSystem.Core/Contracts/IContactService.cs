@@ -16,11 +16,11 @@ namespace CustomerSupportSystem.Core.Contracts
 
         Task<ContactDetailsModel> ContactDetailsByUserId(string id);
 
-        Task<IEnumerable<ContactDetailsPartnerModel>> ContactDetailsPartners(int id);
+        Task<IEnumerable<PartnersListModel>> ContactDetailsPartners(int id);
 
-        Task<IEnumerable<ContactDetailsPartnerModel>> AllPartners();
+        Task<IEnumerable<PartnersListModel>> AllPartners();
 
-        Task<IEnumerable<ContactDetailsPartnerModel>> AllPartnersNotEqualToContactId(int id);
+        Task<IEnumerable<PartnersListModel>> AllPartnersNotEqualToContactId(int id);
 
         Task AddPartner(int contactId, int partnerId);
 

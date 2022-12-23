@@ -1,9 +1,9 @@
 ﻿global using CustomerSupportSystem.Core.Contracts;
-global using CustomerSupportSystem.Core.Models;
 global using CustomerSupportSystem.Core.Models.Contact;
+global using CustomerSupportSystem.Core.Models.Employee;
 global using CustomerSupportSystem.Core.Models.Enums;
 global using CustomerSupportSystem.Core.Models.Partner;
-global using CustomerSupportSystem.Core.Models.Employee;
+global using CustomerSupportSystem.Core.Models.Ticket;
 global using CustomerSupportSystem.Infrastructure.Constants;
 global using CustomerSupportSystem.Infrastructure.Data.Common;
 global using CustomerSupportSystem.Infrastructure.Data.Models;

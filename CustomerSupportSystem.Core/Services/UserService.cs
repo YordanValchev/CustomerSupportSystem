@@ -109,10 +109,37 @@ namespace CustomerSupportSystem.Core.Services
 
         public async Task<string> UserName(ClaimsPrincipal user)
         {
-            string userId = userManager.GetUserId(user);
+            string userId = UserId(user);
+
+            if (await IsClient(user))
+            {
+                var contact = await contactService.ContactDetailsByUserId(userId);
+                return $"{contact.FirstName} {contact.LastName}";
+            }
+
+            var employee = await employeeService.EmployeeDetailsByUserId(userId);
+            return $"{employee.FirstName} {employee.LastName}";
+        }
+
+        public string UserId(ClaimsPrincipal user)
+        {
+            return userManager.GetUserId(user);
+        }
+
+        public async Task<bool> IsClient(ClaimsPrincipal user)
+        {
+            string userId = UserId(user);
             var applicationUser = await GetUserByID(userId);
 
-            if (await userManager.IsInRoleAsync(applicationUser, "Client"))
+            return await userManager.IsInRoleAsync(applicationUser, "Client");
+        }
+
+        public async Task<string> UserNameByUserId(string userId)
+        {
+            var applicationUser = await GetUserByID(userId);
+            bool isClient = await userManager.IsInRoleAsync(applicationUser, "Client");
+
+            if (isClient)
             {
                 var contact = await contactService.ContactDetailsByUserId(userId);
                 return $"{contact.FirstName} {contact.LastName}";

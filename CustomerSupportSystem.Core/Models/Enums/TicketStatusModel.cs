@@ -1,4 +1,4 @@
-﻿namespace CustomerSupportSystem.Core.Models
+﻿namespace CustomerSupportSystem.Core.Models.Enums
 {
     public class TicketStatusModel
     {

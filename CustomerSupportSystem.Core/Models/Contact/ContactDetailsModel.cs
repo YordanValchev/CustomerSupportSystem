@@ -35,8 +35,8 @@ namespace CustomerSupportSystem.Core.Models.Contact
 
         public int? PartnerId { get; set; }
 
-        public IEnumerable<ContactDetailsPartnerModel> Partners { get; set; } = new List<ContactDetailsPartnerModel>();
+        public IEnumerable<PartnersListModel> Partners { get; set; } = new List<PartnersListModel>();
 
-        public IEnumerable<ContactDetailsPartnerModel> AllPartners { get; set; } = new List<ContactDetailsPartnerModel>();
+        public IEnumerable<PartnersListModel> AllPartners { get; set; } = new List<PartnersListModel>();
     }
 }

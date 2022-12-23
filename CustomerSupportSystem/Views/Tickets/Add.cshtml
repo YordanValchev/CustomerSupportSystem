@@ -1,0 +1,79 @@
+﻿@model TicketModel
+
+@{
+    ViewData["Title"] = "New ticket";
+    ViewData["ActivePage"] = NavPagesService.Tickets;
+    int participantsCount = Model.Participants.Count();
+}
+
+<h2 class="text-center mb-3">@ViewBag.Title</h2>
+
+
+<div class="row">
+    <div class="col-md-8">
+        <partial name="_TicketFormPartial" model="@Model" />
+    </div>
+    <div class="col-md-4">
+        <h5 class="text-center mb-3">Participants</h5>
+        <div class="list-group">
+            @foreach (var participant in Model.Participants)
+            {
+                <form class="form-inline" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="input-group">
+                        <input type="hidden" asp-for="@Model.Id" />
+                        <input type="hidden" asp-for="@Model.DateCreated" />
+                        <input type="hidden" asp-for="@Model.DeteFinished" />
+                        <input type="hidden" asp-for="@Model.PartnerId" />
+                        <input type="hidden" asp-for="@Model.TypeId" />
+                        <input type="hidden" asp-for="@Model.PriorityId" />
+                        <input type="hidden" asp-for="@Model.Subject" />
+                        <input type="hidden" asp-for="@Model.PostingText" />
+                        <input type="hidden" asp-for="@Model.StatusId" />
+                        <input type="hidden" asp-for="@Model.WorkedTime" />
+                        <input type="hidden" asp-for="@Model.IsTimeBillable" />
+                        <input type="hidden" asp-for="@Model.FormName" value="RemoveParticipant" />
+                        <input class="form-control" value="@participant.Name" readonly>
+                        @if (participantsCount > 1)
+                        {
+                            <button type="submit" class="btn btn-primary" title="Remove participant">
+                                <i class="bi bi-person-dash"></i>
+                            </button>
+                        }
+                    </div>
+                </form>
+            }
+        </div>
+        <br />
+        <h5 class="text-center mb-3">Include new participant</h5>
+        <form class="form-inline" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="input-group">
+                <input type="hidden" asp-for="@Model.Id" />
+                <input type="hidden" asp-for="@Model.DateCreated" />
+                <input type="hidden" asp-for="@Model.DeteFinished" />
+                <input type="hidden" asp-for="@Model.PartnerId" />
+                <input type="hidden" asp-for="@Model.TypeId" />
+                <input type="hidden" asp-for="@Model.PriorityId" />
+                <input type="hidden" asp-for="@Model.Subject" />
+                <input type="hidden" asp-for="@Model.PostingText" />
+                <input type="hidden" asp-for="@Model.StatusId" />
+                <input type="hidden" asp-for="@Model.WorkedTime" />
+                <input type="hidden" asp-for="@Model.IsTimeBillable" />
+                <input type="hidden" asp-for="@Model.FormName" value="AddParticipant" />
+                <select asp-for="PartnerId" class="form-control">
+                    <option value="">Select participant...</option>
+                    @foreach (var element in Model.PartnerUsersList)
+                    {
+                        <option value="@element.Id">@element.Name</option>
+                    }
+                </select>
+                <button type="submit" class="btn btn-primary">Add</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

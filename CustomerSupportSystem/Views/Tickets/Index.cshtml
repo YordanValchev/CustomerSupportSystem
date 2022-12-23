@@ -1,32 +1,269 @@
-﻿@{
+﻿@model TicketsQueryModel
+
+@{
     ViewData["Title"] = "Tickets";
-    ViewData["ActivePage"] = NavPagesService.Index;
+    ViewData["ActivePage"] = NavPagesService.Tickets;
+    bool isClient = User.IsInRole("Client");
+    int partnersCount = Model.Partners.Count();
+    int userCols = partnersCount > 1 ? 3 : 6;
 }
 
+<div class="row">
+    <div class="col-md-10">
+        <form method="get">
+            <div class="row">
+                <div class="col-md-@userCols">
+                    <select asp-for="UserId" class="form-control">
+                        @foreach (var user in Model.Users)
+                        {
+                            <option value="@user.Id">@user.Name</option>
+                        }
+                    </select>
+                </div>
+                @if (partnersCount>1)
+                {
+                    <div class="col-md-3">
+                        <select asp-for="PartnerId" class="form-control">
+                            <option selected value="">All partners</option>
+                            @foreach (var partner in Model.Partners)
+                            {
+                                <option value="@partner.Id">@partner.Name</option>
+                            }
+                        </select>
+                    </div>
+                }
+                <div class="col-md-2">
+                    <select asp-for="TypeId" class="form-control">
+                        <option selected value="">All types</option>
+                        @foreach (var element in Model.TicketTypes)
+                        {
+                            <option value="@element.Id">@element.Title</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select asp-for="StatusId" class="form-control">
+                        @foreach (var element in Model.TicketStatuses)
+                        {
+                            <option value="@element.Id">@element.Title</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select asp-for="PriorityId" class="form-control">
+                        <option selected value="">All priorities</option>
+                        @foreach (var element in Model.TicketPriorities)
+                        {
+                            <option value="@element.Id">@element.Title</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-10">
+                    <input asp-for="Filter" class="form-control" placeholder="Search">
+                    <span asp-validation-for="Filter" class="small text-danger"></span>
+                </div>
+                <div class="col-md-2">
+                    <input class="btn btn-primary" role="button" type="submit" value="Apply" />
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-2 text-center">
+        <a class="btn btn-primary" role="button" id="NewTicket" asp-area="" asp-controller="Tickets" asp-action="Add">
+            New ticket
+        </a>
+    </div>
+</div>
+<br />
 <div class="text-center">
     <table class="table table-hover">
         <thead>
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Tickets" asp-action="Index"
+                       asp-route-sortOrder="@Model.SortFields.Id">
+                        @Html.DisplayNameFor(model => model.Tickets.First().Id)
+                        <i class="bi @Model.SortFields.IdImageClass"></i>
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Tickets" asp-action="Index"
+                       asp-route-sortOrder="@Model.SortFields.DateCreated">
+                        @Html.DisplayNameFor(model => model.Tickets.First().DateCreated)
+                        <i class="bi @Model.SortFields.DateCreatedImageClass"></i>
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Tickets" asp-action="Index"
+                       asp-route-sortOrder="@Model.SortFields.DeteFinished">
+                        @Html.DisplayNameFor(model => model.Tickets.First().DeteFinished)
+                        <i class="bi @Model.SortFields.DeteFinishedImageClass"></i>
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Tickets" asp-action="Index"
+                       asp-route-sortOrder="@Model.SortFields.Subject">
+                        @Html.DisplayNameFor(model => model.Tickets.First().Subject)
+                        <i class="bi @Model.SortFields.SubjectImageClass"></i>
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Tickets" asp-action="Index"
+                       asp-route-sortOrder="@Model.SortFields.Type">
+                        @Html.DisplayNameFor(model => model.Tickets.First().Type)
+                        <i class="bi @Model.SortFields.TypeImageClass"></i>
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Tickets" asp-action="Index"
+                       asp-route-sortOrder="@Model.SortFields.Status">
+                        @Html.DisplayNameFor(model => model.Tickets.First().Status)
+                        <i class="bi @Model.SortFields.StatusImageClass"></i>
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Tickets" asp-action="Index"
+                       asp-route-sortOrder="@Model.SortFields.WorkedTime">
+                        @Html.DisplayNameFor(model => model.Tickets.First().WorkedTime)
+                        <i class="bi @Model.SortFields.WorkedTimeImageClass"></i>
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Tickets" asp-action="Index"
+                       asp-route-sortOrder="@Model.SortFields.WorkedTimeBillable">
+                        @Html.DisplayNameFor(model => model.Tickets.First().WorkedTimeBillable)
+                        <i class="bi @Model.SortFields.WorkedTimeBillableImageClass"></i>
+                    </a>
+                </th>
+                <th scope="col">
+                    <a class="text-decoration-none" asp-area="" asp-controller="Tickets" asp-action="Index"
+                       asp-route-sortOrder="@Model.SortFields.Priority">
+                        @Html.DisplayNameFor(model => model.Tickets.First().Priority)
+                        <i class="bi @Model.SortFields.PriorityImageClass"></i>
+                    </a>
+                </th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td colspan="2">Larry the Bird</td>
-            </tr>
+            @foreach (var ticket in Model.Tickets)
+            {
+                <tr>
+                    <th scope="row">
+                        <a class="link-dark link-dark text-decoration-none" asp-area="" asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.Id">
+                            @ticket.Id
+                        </a>
+                    </th>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.Id">
+                            @ticket.DateCreated
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.Id">
+                            @ticket.DeteFinished
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.Id">
+                            @ticket.Subject
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.Id">
+                            @ticket.Type
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.Id">
+                            @ticket.Status
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.Id">
+                            @ticket.WorkedTime
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.Id">
+                            @ticket.WorkedTimeBillable
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.Id">
+                            @if(ticket.Priority == "High")
+                            {
+                                <i class="bi bi-exclamation"></i>
+                            }
+                        </a>
+                    </td>
+                    <td>
+                        <a class="link-dark text-decoration-none" asp-area="" asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.Id" title="Details">
+                            <i class="bi bi-card-text"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>
+
+@if (!Model.Tickets.Any())
+{
+    <h6 class="text-center">No records found!</h6>
+}
+else
+{
+    var totalPages = Math.Ceiling((double)Model.TotalRowsCount / TicketsQueryModel.RowsPerPage);
+
+    <div class="row">
+        <nav aria-label="Table navigation">
+            <ul class="pagination">
+
+                @if (Model.CurrentPage > 1)
+                {
+                    int previousPage = Model.CurrentPage - 1;
+
+                    <li class="page-item">
+                        <a class="page-link" asp-area="" asp-controller="Tickets" asp-action="Index" asp-route-currentPage="@previousPage">Previous</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link">Previous</a>
+                    </li>
+                }
+
+                @for (int currentPage = 1; currentPage <= totalPages; currentPage++)
+                {
+                    string activeClass = currentPage == Model.CurrentPage ? "active" : string.Empty;
+
+                    <li class="page-item @activeClass">
+                        <a class="page-link" asp-area="" asp-controller="Tickets" asp-action="Index" asp-route-currentPage="@currentPage">@currentPage</a>
+                    </li>
+                }
+
+                @if (Model.CurrentPage < totalPages)
+                {
+                    int nextPage = Model.CurrentPage + 1;
+
+                    <li class="page-item">
+                        <a class="page-link" asp-area="" asp-controller="Tickets" asp-action="Index" asp-route-currentPage="@nextPage">Next</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link">Next</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+}
+
+

@@ -1,0 +1,84 @@
+﻿@model TicketModel
+
+<form method="post">
+    <div class="row g-3">
+        <input type="hidden" asp-for="@Model.UserId" />
+        <input type="hidden" asp-for="@Model.FormName" value="Main"/>
+        <div class="col-md-4">
+            <label asp-for="Id" class="form-label"></label>
+            <input asp-for="Id" class="form-control" readonly>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="DateCreated" class="form-label"></label>
+            <input asp-for="DateCreated" class="form-control" readonly>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="DeteFinished" class="form-label"></label>
+            <input asp-for="DeteFinished" class="form-control" readonly>
+        </div>
+        <div class="col-6">
+            <select asp-for="PartnerId" class="form-control">
+                <option selected value="">Select partner</option>
+                @foreach (var partner in Model.Partners)
+                {
+                    <option value="@partner.Id">@partner.Name</option>
+                }
+            </select>
+            <span asp-validation-for="PartnerId" class="small text-danger"></span>
+        </div>
+        <div class="col-3">
+            <select asp-for="TypeId" class="form-control">
+                <option selected value="">Select type</option>
+                @foreach (var element in Model.TicketTypes)
+                {
+                    <option value="@element.Id">@element.Title</option>
+                }
+            </select>
+            <span asp-validation-for="TypeId" class="small text-danger"></span>
+        </div>
+        <div class="col-3">
+            <select asp-for="PriorityId" class="form-control">
+                <option selected value="">Select priority</option>
+                @foreach (var element in Model.TicketPriorities)
+                {
+                    <option value="@element.Id">@element.Title</option>
+                }
+            </select>
+            <span asp-validation-for="PriorityId" class="small text-danger"></span>
+        </div>
+        <div class="col-12">
+            <label asp-for="Subject" class="form-label"></label>
+            <input asp-for="Subject" class="form-control">
+            <span asp-validation-for="Subject" class="small text-danger"></span>
+        </div>
+        <partial name="_TicketPostsPartial" model="@Model" />
+        <div class="col-12">
+            <label asp-for="PostingText" class="form-label"></label>
+            <textarea asp-for="PostingText" class="form-control"></textarea>
+            <span asp-validation-for="PostingText" class="small text-danger"></span>
+        </div>
+        <div class="col-4">
+            <select asp-for="StatusId" class="form-control">
+                <option selected value="">Select status</option>
+                @foreach (var element in Model.TicketStatuses)
+                {
+                    <option value="@element.Id">@element.Title</option>
+                }
+            </select>
+            <span asp-validation-for="StatusId" class="small text-danger"></span>
+        </div>
+        <div class="col-2">
+            <label asp-for="WorkedTime" class="form-label"></label>
+            <input asp-for="WorkedTime" class="form-control">
+            <span asp-validation-for="WorkedTime" class="small text-danger"></span>
+        </div>
+        <div class="col-4">
+            <input asp-for="IsTimeBillable" class="form-check-input" type="checkbox" value="true">
+            <label asp-for="IsTimeBillable" class="form-check-label"></label>
+            <span asp-validation-for="IsTimeBillable" class="small text-danger"></span>
+        </div>
+        <div class="col-2">
+            <input class="btn btn-primary" type="submit" value="Post" />
+        </div>
+    </div>
+</form>

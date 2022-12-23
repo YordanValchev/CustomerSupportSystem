@@ -30,8 +30,8 @@
 
         public int? PartnerId { get; set; }
 
-        public IEnumerable<EmployeeDetailsPartnerModel> Partners { get; set; } = new List<EmployeeDetailsPartnerModel>();
+        public IEnumerable<PartnersListModel> Partners { get; set; } = new List<PartnersListModel>();
 
-        public IEnumerable<EmployeeDetailsPartnerModel> AllPartners { get; set; } = new List<EmployeeDetailsPartnerModel>();
+        public IEnumerable<PartnersListModel> AllPartners { get; set; } = new List<PartnersListModel>();
     }
 }

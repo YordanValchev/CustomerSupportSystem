@@ -2,7 +2,7 @@
 @inject UserManager<ApplicationUser> UserManager
 
 <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
-    <a class="nav-link @NavPagesService.IndexNavHandle(ViewContext)" id="tickets" data-toggle="pill" asp-area="" asp-controller="Tickets" asp-action="Index">
+    <a class="nav-link @NavPagesService.TicketsNavHandle(ViewContext)" id="tickets" data-toggle="pill" asp-area="" asp-controller="Tickets" asp-action="Index">
         <i class="bi bi-ticket-perforated"></i>
         Tickets
     </a>
